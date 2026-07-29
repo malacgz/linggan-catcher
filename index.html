@@ -105,6 +105,11 @@ body{font-family:var(--ff-body);background:var(--bg);color:var(--ink);font-size:
 .topbar{padding:14px 28px 8px;display:flex;align-items:center;gap:14px;flex-shrink:0}
 .topbar h1{font-family:var(--ff-display);font-size:24px;font-weight:600;letter-spacing:-.4px}
 .topbar .sub{font-size:13px;color:var(--ink-2);margin-left:2px}
+.batch-toggle{margin-left:auto;width:34px;height:34px;border:1px solid var(--line);background:var(--surface);border-radius:var(--r-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink-2);transition:all .15s;flex-shrink:0}
+.batch-toggle:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.batch-toggle svg{width:17px;height:17px}
+body.batch-mode .batch-toggle{display:none}
+body.home-mode .batch-toggle{display:none}
 .search{margin-left:auto;position:relative;width:220px}
 .search input{width:100%;padding:8px 12px 8px 34px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface);color:var(--ink);font-family:var(--ff-body);font-size:13px;outline:none;transition:border-color .2s}
 .search input:focus{border-color:var(--accent)}
@@ -321,6 +326,28 @@ body.home-mode .content{padding:0}
 .card:hover .card-act{opacity:1}
 .card-act:hover{background:var(--surface-3);color:var(--ink)}
 .card-act svg{width:15px;height:15px}
+.card-sel{width:22px;height:22px;border:2px solid var(--line-2);border-radius:50%;flex-shrink:0;cursor:pointer;transition:all .15s;display:none;align-items:center;justify-content:center;margin-top:1px}
+.card-sel:hover{border-color:var(--accent)}
+body.batch-mode .card-sel{display:flex}
+body.batch-mode .card-act{display:none}
+.card.selected{border-color:var(--accent);box-shadow:0 0 0 2px rgba(194,65,12,.2)}
+.card.selected .card-sel{background:var(--accent);border-color:var(--accent)}
+.card.selected .card-sel svg{display:block}
+.card-sel svg{display:none;width:14px;height:14px;color:#fff}
+
+/* Batch toolbar */
+.batch-bar{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -4px 20px rgba(0,0,0,.1);padding:12px 20px;display:none;align-items:center;gap:10px;z-index:50;animation:slideUp .25s cubic-bezier(.16,1,.3,1)}
+.batch-bar.show{display:flex}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.batch-count{font-size:13px;font-weight:700;color:var(--ink);margin-right:auto;white-space:nowrap}
+.batch-count .n{color:var(--accent);font-size:16px}
+.batch-btn{padding:7px 14px;border:1px solid var(--line);background:var(--surface);border-radius:var(--r-sm);cursor:pointer;font-size:12px;font-weight:600;color:var(--ink-2);transition:all .15s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.batch-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.batch-btn.danger:hover{border-color:#ef4444;color:#ef4444;background:rgba(239,68,68,.08)}
+.batch-btn svg{width:14px;height:14px}
+.batch-close{width:32px;height:32px;border:1px solid var(--line);background:var(--surface);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink-3);flex-shrink:0}
+.batch-close:hover{color:var(--ink);background:var(--surface-2)}
+@media(max-width:768px){.batch-bar{padding:10px 12px;gap:6px}.batch-btn{padding:6px 10px;font-size:11px}.batch-count{font-size:12px}}
 .stars{display:flex;gap:1px;margin-bottom:7px}
 .star{width:13px;height:13px;color:var(--line-2)}
 .star.on{color:#f59e0b;fill:#f59e0b}
@@ -584,7 +611,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6}
     <div class="sb-foot"><button class="tbtn" id="themeBtn" title="切换主题"><svg id="iMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg id="iSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></button><div class="ft" id="storageInfo">本地存储<br>私密安全</div></div>
   </aside>
   <main class="main">
-    <div class="topbar"><h1 id="pageTitle">速记</h1><span class="sub" id="pageSub"></span><div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input type="text" id="searchInput" placeholder="搜索灵感…"></div></div>
+    <div class="topbar"><h1 id="pageTitle">速记</h1><span class="sub" id="pageSub"></span><div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input type="text" id="searchInput" placeholder="搜索灵感…"></div><button class="batch-toggle" id="batchToggle" onclick="enterBatchMode()" title="批量操作"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M17.5 14.5v6M14.5 17.5h6"/></svg></button></div>
     <div class="content" id="content"></div>
   </main>
 </div>
@@ -640,6 +667,13 @@ textarea{resize:vertical;min-height:80px;line-height:1.6}
 </div>
 <div class="ctx" id="ctxMenu"></div>
 <div class="toast" id="toast"></div>
+<div class="batch-bar" id="batchBar">
+  <button class="batch-close" onclick="exitBatchMode()" title="退出批量"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <span class="batch-count">已选 <span class="n" id="batchCount">0</span> 项</span>
+  <button class="batch-btn" onclick="batchAdvance()" title="推进至下一阶段"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>推进</button>
+  <button class="batch-btn" onclick="batchRetreat()" title="退回至上一阶段"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>退回</button>
+  <button class="batch-btn danger" onclick="batchDelete()" title="删除选中"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>删除</button>
+</div>
 <input type="file" id="fileInput" accept=".json" style="display:none">
 
 <!-- Capture success popup -->
@@ -1138,7 +1172,7 @@ function render(){
 
 /* ===== Home navigation helpers ===== */
 function toggleFlyout(e){e.stopPropagation();document.getElementById('homeFlyout').classList.toggle('show')}
-function goToView(v){view=v;stageFilter=null;searchQ='';document.getElementById('searchInput').value='';document.getElementById('homeFlyout').classList.remove('show');if(v==='home')homeMode='choice';closeSidebar();render();updateCounts()}
+function goToView(v){if(document.body.classList.contains('batch-mode'))exitBatchMode();view=v;stageFilter=null;searchQ='';document.getElementById('searchInput').value='';document.getElementById('homeFlyout').classList.remove('show');if(v==='home')homeMode='choice';closeSidebar();render();updateCounts()}
 function toggleSidebar(){document.querySelector('.sidebar').classList.toggle('open');document.getElementById('sbBackdrop').classList.toggle('show')}
 function closeSidebar(){document.querySelector('.sidebar').classList.remove('open');document.getElementById('sbBackdrop').classList.remove('show')}
 function goToStage(s){view='stage';stageFilter=s;searchQ='';document.getElementById('searchInput').value='';document.getElementById('homeFlyout').classList.remove('show');closeSidebar();render();updateCounts()}
@@ -1257,6 +1291,7 @@ function renderPipeline(c){
   });
   html+='</div>';
   c.innerHTML=html;
+  syncBatchSelection();
 }
 function openModalToStage(stage){edStage=stage;openModal(null);buildStagePills();toggleStageFields(stage)}
 
@@ -1278,7 +1313,7 @@ function cardHTML(i,showAlerts){
   }else if(i.format==='commerce'){
     commerceHtml=`<div class="commerce-bar"><span class="em">🛒</span><span>带货选题</span><span class="amt">待定价</span></div>`;
   }
-  return `<div class="card s-${i.stage}" onclick="openModal('${i.id}')"><div class="card-top"><div class="card-title">${esc(i.title)}</div><button class="card-act" onclick="event.stopPropagation();showCtx(event,'${i.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div>${starsHTML(i.heat)}${i.content?`<div class="card-body">${esc(i.content)}</div>`:''}<div class="card-meta">${meta}</div>${commerceHtml}${alertHtml}</div>`;
+  return `<div class="card s-${i.stage}" data-id="${i.id}" onclick="cardClick(event,'${i.id}')"><div class="card-top"><div class="card-sel" onclick="event.stopPropagation();toggleSelect('${i.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div class="card-title">${esc(i.title)}</div><button class="card-act" onclick="event.stopPropagation();showCtx(event,'${i.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div>${starsHTML(i.heat)}${i.content?`<div class="card-body">${esc(i.content)}</div>`:''}<div class="card-meta">${meta}</div>${commerceHtml}${alertHtml}</div>`;
 }
 function starsHTML(n){return `<div class="stars">${[1,2,3,4,5].map(i=>`<svg class="star ${i<=n?'on':''}" viewBox="0 0 24 24" fill="${i<=n?'currentColor':'none'}" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>`).join('')}</div>`}
 
@@ -1308,6 +1343,7 @@ function renderLibrary(c){
   list.sort(sortByScore);
   if(list.length===0){c.innerHTML=fh+`<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><h3>${searchQ?'没找到相关灵感':'灵感库还是空的'}</h3><p>${searchQ?'换个关键词试试':'去速记页捕捉第一个灵感'}</p></div>`;return}
   c.innerHTML=fh+`<div class="grid stagger">${list.map(i=>cardHTML(i,true)).join('')}</div>`;
+  syncBatchSelection();
 }
 function setFilter(v){filters.format=v;render()}
 
@@ -1468,11 +1504,13 @@ function renderStageView(c){
   list.sort(sortByScore);
   if(list.length===0){c.innerHTML=`<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/></svg><h3>这里还没有灵感</h3><p>去速记页捕捉，或从流水线推进过来</p></div>`;return}
   c.innerHTML=`<div class="grid stagger">${list.map(i=>cardHTML(i,true)).join('')}</div>`;
+  syncBatchSelection();
 }
 function renderArchived(c){
   let list=searchFilter(ideas.filter(i=>i.archived));
   if(list.length===0){c.innerHTML=`<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/></svg><h3>没有归档内容</h3></div>`;return}
   c.innerHTML=`<div class="grid stagger">${list.map(i=>cardHTML(i,false)).join('')}</div>`;
+  syncBatchSelection();
 }
 
 /* ===== Context Menu ===== */
@@ -1499,6 +1537,79 @@ function toggleArchive(id){const i=ideas.find(x=>x.id===id);if(!i)return;i.archi
 function duplicate(id){const i=ideas.find(x=>x.id===id);if(!i)return;ideas.unshift({...i,id:uid(),title:i.title+' (副本)',stage:'spark',archived:false,links:{},metrics:{},createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});save();render();updateCounts();document.getElementById('ctxMenu').classList.remove('show');toast('已创建副本')}
 function deleteIdea(id){if(!confirm('确定删除这条灵感？此操作不可撤销。'))return;ideas=ideas.filter(i=>i.id!==id);save();sbDelete(id);closeModal();render();updateCounts();toast('已删除')}
 
+/* ===== Batch Operations ===== */
+let batchSelected=new Set();
+const STAGE_ORDER=['spark','cand','plan','prod','pub','reuse'];
+
+function enterBatchMode(){
+  if(view==='home'||view==='data'){toast('此页面不支持批量操作');return}
+  document.body.classList.add('batch-mode');
+  batchSelected.clear();
+  document.getElementById('batchBar').classList.add('show');
+  updateBatchUI();
+  render();
+}
+function exitBatchMode(){
+  document.body.classList.remove('batch-mode');
+  batchSelected.clear();
+  document.getElementById('batchBar').classList.remove('show');
+  render();
+}
+function cardClick(e,id){
+  if(document.body.classList.contains('batch-mode')){e.stopPropagation();toggleSelect(id)}
+  else openModal(id);
+}
+function toggleSelect(id){
+  if(batchSelected.has(id))batchSelected.delete(id);
+  else batchSelected.add(id);
+  updateBatchUI();
+  const card=document.querySelector(`.card[data-id="${id}"]`);
+  if(card)card.classList.toggle('selected',batchSelected.has(id));
+}
+function updateBatchUI(){
+  document.getElementById('batchCount').textContent=batchSelected.size;
+}
+function syncBatchSelection(){
+  if(!document.body.classList.contains('batch-mode'))return;
+  document.querySelectorAll('.card[data-id]').forEach(card=>{
+    const id=card.dataset.id;
+    card.classList.toggle('selected',batchSelected.has(id));
+  });
+}
+function getSelectedIdeas(){return ideas.filter(i=>batchSelected.has(i.id))}
+function batchAdvance(){
+  const sel=getSelectedIdeas();
+  if(!sel.length){toast('请先选择灵感');return}
+  let moved=0;
+  sel.forEach(i=>{
+    const idx=STAGE_ORDER.indexOf(i.stage);
+    if(idx<STAGE_ORDER.length-1){i.stage=STAGE_ORDER[idx+1];i.updatedAt=new Date().toISOString();moved++}
+  });
+  if(moved){save();render();updateCounts();updateBatchUI();toast('已推进 '+moved+' 条')}
+  else toast('选中的灵感已在最后阶段');
+}
+function batchRetreat(){
+  const sel=getSelectedIdeas();
+  if(!sel.length){toast('请先选择灵感');return}
+  let moved=0;
+  sel.forEach(i=>{
+    const idx=STAGE_ORDER.indexOf(i.stage);
+    if(idx>0){i.stage=STAGE_ORDER[idx-1];i.updatedAt=new Date().toISOString();moved++}
+  });
+  if(moved){save();render();updateCounts();updateBatchUI();toast('已退回 '+moved+' 条')}
+  else toast('选中的灵感已在最初阶段');
+}
+function batchDelete(){
+  const sel=getSelectedIdeas();
+  if(!sel.length){toast('请先选择灵感');return}
+  if(!confirm('确定删除选中的 '+sel.length+' 条灵感？此操作不可撤销。'))return;
+  sel.forEach(i=>sbDelete(i.id));
+  ideas=ideas.filter(i=>!batchSelected.has(i.id));
+  batchSelected.clear();
+  save();render();updateCounts();updateBatchUI();
+  toast('已删除 '+sel.length+' 条');
+}
+
 /* ===== Utils ===== */
 function getActive(){return ideas.filter(i=>!i.archived)}
 function searchFilter(list){if(!searchQ)return list;return list.filter(i=>i.title.toLowerCase().includes(searchQ)||(i.content||'').toLowerCase().includes(searchQ)||(i.tags||[]).some(t=>t.toLowerCase().includes(searchQ)))}
@@ -1512,8 +1623,9 @@ function fmt(n){return n>=10000?(n/10000).toFixed(1)+'万':String(n)}
 function registerSW(){if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{})}
 
 /* ===== Cloud Sync via Supabase ===== */
-let sb=null,sbReady=false,sbSuppress=false;
-let sbDebounceTimer=null,sbRenderTimer=null;
+let sb=null,sbReady=false;
+let sbPushTs=0,sbRenderTimer=null,sbDebounceTimer=null;
+let sbSubscribed=false;
 
 function setSyncStatus(s,t){
   const ind=document.getElementById('syncIndicator'),txt=document.getElementById('syncText');
@@ -1533,7 +1645,7 @@ function initSync(){
   if(!SB_URL||SB_URL==='__SUPABASE_URL__'){setSyncStatus('off','未配置云端');return}
   try{
     setSyncStatus('connecting','连接云端…');
-    sb=supabase.createClient(SB_URL,SB_KEY,{realtime:{params:{eventsPerSecond:10}}});
+    sb=supabase.createClient(SB_URL,SB_KEY,{realtime:{params:{eventsPerSecond:5}}});
     sbLoadCloud();
   }catch(e){setSyncStatus('off','同步不可用')}
 }
@@ -1560,22 +1672,21 @@ async function sbLoadCloud(){
     sbReady=true;
     setSyncStatus('on','云端已连接');
     sbPushAll();
-    sbSubscribe();
+    if(!sbSubscribed)sbSubscribe();
   }catch(e){sbReady=false;setSyncStatus('off','离线模式');setTimeout(()=>{if(sb)sbLoadCloud()},10000)}
 }
 
 function sbPushAll(){
-  if(!sb||!sbReady||sbSuppress)return;
+  if(!sb||!sbReady)return;
   if(sbDebounceTimer)clearTimeout(sbDebounceTimer);
-  setSyncStatus('pushing','同步中…');
   sbDebounceTimer=setTimeout(async()=>{
     const ts=Date.now();
+    sbPushTs=ts;
     const rows=ideas.map(i=>({id:i.id,data:i,updated_at:ts}));
     try{
       if(rows.length>0){const{error}=await sb.from('ideas').upsert(rows);if(error)throw error}
-      setTimeout(()=>{if(sbReady)setSyncStatus('on','云端已连接')},500);
-    }catch(e){setSyncStatus('off','同步失败');setTimeout(()=>{if(sb)sbLoadCloud()},5000)}
-  },600);
+    }catch(e){}
+  },800);
 }
 
 async function sbDelete(id){
@@ -1584,15 +1695,16 @@ async function sbDelete(id){
 }
 
 function sbSubscribe(){
-  if(!sb)return;
+  if(!sb||sbSubscribed)return;
+  sbSubscribed=true;
   sb.channel('ideas-changes')
     .on('postgres_changes',{event:'*',schema:'public',table:'ideas'},(payload)=>{
-      if(sbSuppress)return;
       handleSbChange(payload);
     })
     .subscribe((status)=>{
       if(status==='SUBSCRIBED'){sbReady=true;setSyncStatus('on','云端已连接')}
       else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){
+        sbSubscribed=false;
         setSyncStatus('off','同步已断开');
         setTimeout(()=>{if(sb)sbSubscribe()},5000);
       }
@@ -1601,7 +1713,9 @@ function sbSubscribe(){
 
 function handleSbChange(payload){
   const{eventType,new:newRow,old:oldRow}=payload;
-  setSyncStatus('receiving','接收数据…');
+  // Skip echoes from our own pushes
+  if(newRow&&newRow.updated_at&&newRow.updated_at===sbPushTs)return;
+  let changed=false;
   if(eventType==='INSERT'||eventType==='UPDATE'){
     if(newRow&&newRow.data&&newRow.id){
       const idea=newRow.data;
@@ -1609,17 +1723,21 @@ function handleSbChange(payload){
       if(idx>=0){
         const localTs=new Date(ideas[idx].updatedAt||0).getTime();
         const cloudTs=newRow.updated_at||0;
-        if(cloudTs>=localTs)ideas[idx]=idea;
-      }else{ideas.unshift(idea)}
+        if(cloudTs>localTs){ideas[idx]=idea;changed=true}
+      }else{ideas.unshift(idea);changed=true}
     }
   }else if(eventType==='DELETE'){
-    if(oldRow&&oldRow.id)ideas=ideas.filter(i=>i.id!==oldRow.id);
+    if(oldRow&&oldRow.id){
+      const before=ideas.length;
+      ideas=ideas.filter(i=>i.id!==oldRow.id);
+      if(ideas.length!==before)changed=true;
+    }
   }
+  if(!changed)return;
   if(sbRenderTimer)clearTimeout(sbRenderTimer);
   sbRenderTimer=setTimeout(()=>{
     try{localStorage.setItem(SK,JSON.stringify(ideas))}catch(e){}
     render();updateCounts();
-    if(sbReady)setSyncStatus('on','云端已连接');
   },300);
 }
 
