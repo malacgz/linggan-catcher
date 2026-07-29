@@ -1,4 +1,4 @@
-const CACHE_NAME = 'linggan-catcher-v9';
+const CACHE_NAME = 'linggan-catcher-v10';
 const ASSETS = ['./', './index.html', './manifest.json', './icon.svg', './supabase.js'];
 
 self.addEventListener('install', (e) => {

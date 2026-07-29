@@ -567,7 +567,8 @@ textarea{resize:vertical;min-height:80px;line-height:1.6}
   .sidebar.open{transform:translateX(0)}
   .sb-backdrop{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.35);z-index:65;display:none;animation:fade .2s}
   .sb-backdrop.show{display:block}
-  .topbar{padding:12px 52px 6px 16px;gap:8px}.topbar h1{font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.topbar .sub{display:none}.search{width:110px}
+  .topbar{padding:12px 52px 6px 16px;gap:8px;flex-wrap:wrap}.topbar h1{font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.topbar .sub{display:none}.search{width:100%;margin-left:0;order:2}
+  .batch-toggle{width:30px;height:30px;flex-shrink:0;order:1}
   .content{padding:6px 16px 110px}.grid{grid-template-columns:1fr}
   .dl-row{grid-template-columns:1fr}
   .home-greet{font-size:26px}.home-quick textarea{font-size:17px;min-height:110px;padding:20px}
@@ -724,14 +725,17 @@ const PLATFORMS={
   bili:{name:'B站',color:'#00a1d6',bg:'var(--p-bili-bg)'},
 };
 const FORMATS={short:'短视频',long:'长视频',image:'图文',commerce:'带货'};
-const SK='linggan_pipeline_v4',TK='linggan_theme_v2';
+const SK='linggan_pipeline_v4',TK='linggan_theme_v2',DK='lg_deleted_v4';
 const SB_URL='https://uufbkzdbcgxmnlphggxa.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1ZmJremRiY2d4bW5scGhnZ3hhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzMzQyODMsImV4cCI6MjEwMDkxMDI4M30.xlztgrZ8UUIs-Degy9EYUJftw7XJ_ke7Ae6PbAUva-4';
 
 let ideas=[],view='home',stageFilter=null,filters={format:'all'},searchQ='',dcPlatform='all';
+let deletedIds=new Set();
 let edHeat=3,edTime='ever',edStage='spark';
 let homeHeat=3,homeTime='ever';
 
-function init(){loadData();loadTheme();buildHeat();buildStagePills();bind();render();updateCounts();registerSW();initSync()}
+function init(){loadDeletedIds();loadData();loadTheme();buildHeat();buildStagePills();bind();render();updateCounts();registerSW();initSync()}
+function loadDeletedIds(){try{const s=localStorage.getItem(DK);if(s)deletedIds=new Set(JSON.parse(s))}catch(e){}}
+function saveDeletedIds(){try{let a=Array.from(deletedIds);if(a.length>500)a.splice(0,a.length-500);localStorage.setItem(DK,JSON.stringify(a))}catch(e){}}
 
 function loadData(){
   try{const r=localStorage.getItem(SK);if(r)ideas=JSON.parse(r)}catch(e){ideas=[]}
@@ -739,20 +743,33 @@ function loadData(){
     // Migrate from v3 if exists
     try{
       const v3=localStorage.getItem('linggan_pipeline_v3');
-      if(v3){ideas=JSON.parse(v3);localStorage.setItem('lg_seeded_v4','1');save();return}
+      if(v3){ideas=JSON.parse(v3);localStorage.setItem('lg_seeded_v4','1');cleanupOldSeeds();save();return}
     }catch(e){}
     ideas=[
-      {id:uid(),title:'两人一车一周末｜自驾露营vlog',content:'记录周末自驾去安吉的旅程，重点拍路途中的对话和到达营地后的松弛感。',stage:'cand',heat:5,time:'ever',deadline:null,format:'short',tags:['情感','自驾','周末'],links:{},metrics:{},createdAt:da(2),updatedAt:da(2)},
-      {id:uid(),title:'已婚无娃的快乐系列',content:'做一系列已婚无娃夫妻的日常快乐瞬间，做饭、追剧、说走就走。',stage:'plan',heat:4,time:'ever',deadline:null,format:'short',tags:['情感','日常'],links:{},metrics:{},createdAt:da(5),updatedAt:da(3)},
-      {id:uid(),title:'city walk小众路线推荐',content:'结合city walk做一期本地小众路线，重点是店铺和街景的烟火气',stage:'prod',heat:4,time:'trend',deadline:da(-1),format:'image',tags:['热点','探店'],links:{},metrics:{},createdAt:da(1),updatedAt:da(1)},
-      {id:uid(),title:'标题库：用反差感制造好奇',content:'收集有反差感的标题句式',stage:'spark',heat:3,time:'ever',deadline:null,format:null,tags:['标题','技巧'],links:{},metrics:{},createdAt:da(8),updatedAt:da(8)},
-      {id:uid(),title:'夕阳逆光人像拍摄技巧',content:'金色时段拍摄，侧逆光，反光板补面光',stage:'spark',heat:2,time:'ever',deadline:null,format:null,tags:['拍摄','人像'],links:{},metrics:{},createdAt:da(12),updatedAt:da(12)},
-      {id:uid(),title:'一个人也要好好吃饭',content:'独居女性做饭场景，强调治愈感，60秒以内',stage:'pub',heat:4,time:'ever',deadline:null,format:'short',tags:['情感','独居','治愈'],links:{douyin:'https://www.douyin.com/video/example123'},metrics:{douyin:{views:8500,likes:1200,comments:89}},createdAt:da(20),updatedAt:da(15)},
-      {id:uid(),title:'周末情侣vlog翻新',content:'把之前拍的素材重新剪辑一版不同风格的',stage:'reuse',heat:3,time:'ever',deadline:null,format:'short',tags:['翻新'],links:{},metrics:{},createdAt:da(30),updatedAt:da(25)},
-      {id:uid(),title:'独居女生的周末早晨',content:'记录一个人的早餐、阅读、整理房间的治愈时光',stage:'pub',heat:5,time:'ever',deadline:null,format:'image',tags:['独居','治愈','周末'],links:{xhs:'https://www.xiaohongshu.com/explore/example456'},metrics:{xhs:{views:12000,likes:2100,comments:150}},createdAt:da(25),updatedAt:da(18)},
+      {id:'seed-001',title:'两人一车一周末｜自驾露营vlog',content:'记录周末自驾去安吉的旅程，重点拍路途中的对话和到达营地后的松弛感。',stage:'cand',heat:5,time:'ever',deadline:null,format:'short',tags:['情感','自驾','周末'],links:{},metrics:{},createdAt:da(2),updatedAt:da(2)},
+      {id:'seed-002',title:'已婚无娃的快乐系列',content:'做一系列已婚无娃夫妻的日常快乐瞬间，做饭、追剧、说走就走。',stage:'plan',heat:4,time:'ever',deadline:null,format:'short',tags:['情感','日常'],links:{},metrics:{},createdAt:da(5),updatedAt:da(3)},
+      {id:'seed-003',title:'city walk小众路线推荐',content:'结合city walk做一期本地小众路线，重点是店铺和街景的烟火气',stage:'prod',heat:4,time:'trend',deadline:da(-1),format:'image',tags:['热点','探店'],links:{},metrics:{},createdAt:da(1),updatedAt:da(1)},
+      {id:'seed-004',title:'标题库：用反差感制造好奇',content:'收集有反差感的标题句式',stage:'spark',heat:3,time:'ever',deadline:null,format:null,tags:['标题','技巧'],links:{},metrics:{},createdAt:da(8),updatedAt:da(8)},
+      {id:'seed-005',title:'夕阳逆光人像拍摄技巧',content:'金色时段拍摄，侧逆光，反光板补面光',stage:'spark',heat:2,time:'ever',deadline:null,format:null,tags:['拍摄','人像'],links:{},metrics:{},createdAt:da(12),updatedAt:da(12)},
+      {id:'seed-006',title:'一个人也要好好吃饭',content:'独居女性做饭场景，强调治愈感，60秒以内',stage:'pub',heat:4,time:'ever',deadline:null,format:'short',tags:['情感','独居','治愈'],links:{douyin:'https://www.douyin.com/video/example123'},metrics:{douyin:{views:8500,likes:1200,comments:89}},createdAt:da(20),updatedAt:da(15)},
+      {id:'seed-007',title:'周末情侣vlog翻新',content:'把之前拍的素材重新剪辑一版不同风格的',stage:'reuse',heat:3,time:'ever',deadline:null,format:'short',tags:['翻新'],links:{},metrics:{},createdAt:da(30),updatedAt:da(25)},
+      {id:'seed-008',title:'独居女生的周末早晨',content:'记录一个人的早餐、阅读、整理房间的治愈时光',stage:'pub',heat:5,time:'ever',deadline:null,format:'image',tags:['独居','治愈','周末'],links:{xhs:'https://www.xiaohongshu.com/explore/example456'},metrics:{xhs:{views:12000,likes:2100,comments:150}},createdAt:da(25),updatedAt:da(18)},
     ];
     save();localStorage.setItem('lg_seeded_v4','1');
   }
+  cleanupOldSeeds();
+}
+function cleanupOldSeeds(){
+  if(localStorage.getItem('lg_seed_cleanup_v1'))return;
+  const seedTitles=['两人一车一周末｜自驾露营vlog','已婚无娃的快乐系列','city walk小众路线推荐','标题库：用反差感制造好奇','夕阳逆光人像拍摄技巧','一个人也要好好吃饭','周末情侣vlog翻新','独居女生的周末早晨'];
+  const before=ideas.length;
+  ideas=ideas.filter(i=>{
+    if(i.id&&i.id.startsWith('seed-')){deletedIds.add(i.id);return false}
+    if(seedTitles.includes(i.title)){deletedIds.add(i.id);return false}
+    return true;
+  });
+  if(ideas.length<before){saveDeletedIds();try{localStorage.setItem(SK,JSON.stringify(ideas))}catch(e){}}
+  localStorage.setItem('lg_seed_cleanup_v1','1');
 }
 function save(){try{localStorage.setItem(SK,JSON.stringify(ideas))}catch(e){toast('存储空间已满，建议导出备份后清理旧数据')}sbPushAll()}
 function loadTheme(){const t=localStorage.getItem(TK)||'light';document.documentElement.setAttribute('data-theme',t);document.getElementById('iMoon').style.display=t==='light'?'block':'none';document.getElementById('iSun').style.display=t==='dark'?'block':'none'}
@@ -1535,7 +1552,7 @@ function showCtx(e,id){
 function advance(id,ns){const i=ideas.find(x=>x.id===id);if(!i)return;i.stage=ns;i.updatedAt=new Date().toISOString();save();render();updateCounts();document.getElementById('ctxMenu').classList.remove('show');toast('推进至「'+STAGE_MAP[ns].name+'」')}
 function toggleArchive(id){const i=ideas.find(x=>x.id===id);if(!i)return;i.archived=!i.archived;i.updatedAt=new Date().toISOString();save();render();updateCounts();document.getElementById('ctxMenu').classList.remove('show');toast(i.archived?'已归档':'已恢复')}
 function duplicate(id){const i=ideas.find(x=>x.id===id);if(!i)return;ideas.unshift({...i,id:uid(),title:i.title+' (副本)',stage:'spark',archived:false,links:{},metrics:{},createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});save();render();updateCounts();document.getElementById('ctxMenu').classList.remove('show');toast('已创建副本')}
-function deleteIdea(id){if(!confirm('确定删除这条灵感？此操作不可撤销。'))return;ideas=ideas.filter(i=>i.id!==id);save();sbDelete(id);closeModal();render();updateCounts();toast('已删除')}
+function deleteIdea(id){if(!confirm('确定删除这条灵感？此操作不可撤销。'))return;ideas=ideas.filter(i=>i.id!==id);deletedIds.add(id);saveDeletedIds();save();sbDelete(id);closeModal();render();updateCounts();toast('已删除')}
 
 /* ===== Batch Operations ===== */
 let batchSelected=new Set();
@@ -1603,10 +1620,10 @@ function batchDelete(){
   const sel=getSelectedIdeas();
   if(!sel.length){toast('请先选择灵感');return}
   if(!confirm('确定删除选中的 '+sel.length+' 条灵感？此操作不可撤销。'))return;
-  sel.forEach(i=>sbDelete(i.id));
+  sel.forEach(i=>{deletedIds.add(i.id);sbDelete(i.id)});
   ideas=ideas.filter(i=>!batchSelected.has(i.id));
   batchSelected.clear();
-  save();render();updateCounts();updateBatchUI();
+  saveDeletedIds();save();render();updateCounts();updateBatchUI();
   toast('已删除 '+sel.length+' 条');
 }
 
@@ -1656,8 +1673,11 @@ async function sbLoadCloud(){
     if(error)throw error;
     if(data&&data.length>0){
       let changed=false;
+      const cloudIds=[];
       data.forEach(row=>{
         if(row.data&&row.id){
+          cloudIds.push(row.id);
+          if(deletedIds.has(row.id))return;
           const idx=ideas.findIndex(i=>i.id===row.id);
           if(idx<0){ideas.push(row.data);changed=true}
           else{
@@ -1667,6 +1687,11 @@ async function sbLoadCloud(){
           }
         }
       });
+      // Clean up cloud: delete rows that were locally deleted
+      const staleInCloud=cloudIds.filter(id=>deletedIds.has(id));
+      if(staleInCloud.length>0){
+        try{await sb.from('ideas').delete().in('id',staleInCloud)}catch(e){}
+      }
       if(changed){try{localStorage.setItem(SK,JSON.stringify(ideas))}catch(e){}render();updateCounts()}
     }
     sbReady=true;
@@ -1682,9 +1707,20 @@ function sbPushAll(){
   sbDebounceTimer=setTimeout(async()=>{
     const ts=Date.now();
     sbPushTs=ts;
+    const currentIds=ideas.map(i=>i.id);
     const rows=ideas.map(i=>({id:i.id,data:i,updated_at:ts}));
     try{
       if(rows.length>0){const{error}=await sb.from('ideas').upsert(rows);if(error)throw error}
+      // Clean up: delete cloud rows that no longer exist locally
+      const{data:cloudData,error:sErr}=await sb.from('ideas').select('id');
+      if(!sErr&&cloudData){
+        const staleIds=cloudData.map(r=>r.id).filter(id=>!currentIds.includes(id));
+        if(staleIds.length>0){
+          await sb.from('ideas').delete().in('id',staleIds);
+          staleIds.forEach(id=>deletedIds.delete(id));
+          saveDeletedIds();
+        }
+      }
     }catch(e){}
   },800);
 }
@@ -1715,6 +1751,8 @@ function handleSbChange(payload){
   const{eventType,new:newRow,old:oldRow}=payload;
   // Skip echoes from our own pushes
   if(newRow&&newRow.updated_at&&newRow.updated_at===sbPushTs)return;
+  // Skip rows that were locally deleted (tombstone)
+  if(newRow&&newRow.id&&deletedIds.has(newRow.id))return;
   let changed=false;
   if(eventType==='INSERT'||eventType==='UPDATE'){
     if(newRow&&newRow.data&&newRow.id){
