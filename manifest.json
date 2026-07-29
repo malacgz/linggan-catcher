@@ -1,0 +1,19 @@
+{
+  "name": "灵感捕手 · 灵感流水线",
+  "short_name": "灵感捕手",
+  "description": "创作者的灵感流水线 - 从捕捉到孵化到推进",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5f1ea",
+  "theme_color": "#c2410c",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
