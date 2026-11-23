@@ -946,7 +946,7 @@ function cleanupSeeds(){
   });
   if(ideas.length<before){saveDeletedIds();try{localStorage.setItem(SK,JSON.stringify(ideas))}catch(e){}}
 }
-function save(){try{localStorage.setItem(SK,JSON.stringify(ideas))}catch(e){toast('存储空间已满，建议导出备份后清理旧数据')}sbPushAll()}
+function save(){try{localStorage.setItem(SK,JSON.stringify(ideas))}catch(e){toast('存储空间已满，建议导出备份后清理旧数据')}sbPushAll();pushDigest()}
 function loadTheme(){const t=localStorage.getItem(TK)||'light';document.documentElement.setAttribute('data-theme',t);document.getElementById('iMoon').style.display=t==='light'?'block':'none';document.getElementById('iSun').style.display=t==='dark'?'block':'none'}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
 function da(n){const d=new Date();d.setDate(d.getDate()+n);return d.toISOString()}
@@ -2295,8 +2295,59 @@ function saveApiKey(){
   toast(key?'AI Key 已保存':'AI Key 已清除');
 }
 
-// 桌面版（Electron）标记，用于无边框窗口的拖动区域
-if(window.electronAPI)document.body.classList.add('electron');
+// ===== 每日推送：早间推荐 / 晚间小结 =====
+function _isToday(ts){return !!ts&&new Date(ts).toDateString()===new Date().toDateString()}
+function buildMorningDigest(){
+  const t=new Date();
+  const active=ideas.filter(i=>['spark','cand','plan','prod'].includes(i.stage));
+  if(!active.length)return {kind:'morning',title:'💡 库里还是空的',body:'花 3 秒记下一个念头就好，剩下的交给我。'};
+  const urgent=active.filter(i=>i.time==='trend'&&i.deadline&&daysBtw(t,new Date(i.deadline))>=-1&&daysBtw(t,new Date(i.deadline))<=3).sort((a,b)=>score(b)-score(a));
+  if(urgent.length){const i=urgent[0],left=Math.max(0,daysBtw(t,new Date(i.deadline)));
+    return {kind:'morning',ideaId:i.id,title:`${left<=0?'⏳ 今天最后一天':'⏳ 热点还剩 '+left+' 天'}：${i.title}`,body:`时效选题，再不动就废了。建议今天先拍粗剪版，先发后补。`};}
+  const stalled=active.filter(i=>i.heat>=4&&daysBtw(i.updatedAt,t)>=7).sort((a,b)=>score(b)-score(a));
+  if(stalled.length){const i=stalled[0];
+    return {kind:'morning',ideaId:i.id,title:`🔥 今天最该拍：${i.title}`,body:`你给了 ${i.heat} 星热度，放了 ${daysBtw(i.updatedAt,t)} 天还没动，现在在「${STAGE_MAP[i.stage].name}」。花 10 分钟往前推一步就行。`};}
+  const making=active.filter(i=>i.stage==='prod').sort((a,b)=>score(b)-score(a));
+  if(making.length){const i=making[0];
+    return {kind:'morning',ideaId:i.id,title:`🎬 今天把它收尾：${i.title}`,body:`已经在「制作中」，搁了 ${daysBtw(i.updatedAt,t)} 天。哪怕只剪 30 秒，也比放着强。`};}
+  const cand=active.filter(i=>i.stage==='cand').sort((a,b)=>score(b)-score(a));
+  if(cand.length){const i=cand[0];
+    return {kind:'morning',ideaId:i.id,title:`📝 今天可以轻松点：${i.title}`,body:`没有临期选题。把这条候选补个大纲，20 分钟的事，明天就能开拍。`};}
+  const last=active.sort((a,b)=>score(b)-score(a))[0];
+  return {kind:'morning',ideaId:last.id,title:`☕ 今天看看这条：${last.title}`,body:'库里没有紧急项，按自己的节奏推进就好。'};
+}
+function buildEveningDigest(){
+  const created=ideas.filter(i=>_isToday(i.createdAt));
+  const moved=ideas.filter(i=>_isToday(i.updatedAt)&&!_isToday(i.createdAt));
+  const published=moved.filter(i=>i.stage==='pub');
+  const advanced=moved.filter(i=>i.stage!=='pub');
+  if(published.length){
+    const i=published[0];
+    return {kind:'evening',title:`🎉 今天发布了 ${published.length} 条`,body:`「${i.title}」已上线，记得明天回填播放数据——系统会记住哪类选题真的有效。`};
+  }
+  if(created.length||advanced.length){
+    const top=advanced[0]||created[0];
+    let body=`新增灵感 ${created.length} 条 · 推进 ${advanced.length} 条。`;
+    if(top)body+=`「${top.title}」往前一步了。`;
+    return {kind:'evening',ideaId:top&&top.id,title:'📊 今日小结',body};
+  }
+  const cold=ideas.filter(i=>['spark','cand','plan'].includes(i.stage)&&i.heat>=4).length;
+  return {kind:'evening',title:'🌙 今天静悄悄',body:cold?`今天没记录。睡前 30 秒，把今天最想说的一句话丢进库里就够了。库里还有 ${cold} 条高热度在冷着。`:'今天没记录。睡前 30 秒，把今天最想说的一句话丢进库里就够了。今天算休息，不算断更。'};
+}
+let _dgTimer=null;
+function pushDigest(){
+  if(!window.electronAPI||!electronAPI.updateDigest)return;
+  clearTimeout(_dgTimer);
+  _dgTimer=setTimeout(()=>{try{electronAPI.updateDigest({morning:buildMorningDigest(),evening:buildEveningDigest()})}catch(e){}},600);
+}
+
+// 桌面版（Electron）标记与推送联动
+if(window.electronAPI){
+  document.body.classList.add('electron');
+  if(electronAPI.onDigestInApp)electronAPI.onDigestInApp(d=>{toast('【'+(d.kind==='morning'?'今日推荐':'今日总结')+'】'+d.title)});
+  if(electronAPI.onOpenIdea)electronAPI.onOpenIdea(id=>{goToView('pipeline');setTimeout(()=>{try{openModal(id)}catch(e){}},100)});
+  setTimeout(pushDigest,1200);
+}
 
 init();
 </script>
