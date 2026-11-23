@@ -738,6 +738,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6}
       <div class="nav-item" data-view="archived"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/></svg>归档</div>
       <div class="nav-item" data-action="export"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出备份</div>
       <div class="nav-item" data-action="import"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>导入备份</div>
+      <div class="nav-item" data-action="aikey"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z"/><circle cx="12" cy="12" r="3"/></svg>AI 文案设置</div>
     </nav>
     <div class="sync-indicator sync-off" id="syncIndicator"><span class="sync-dot"></span><span id="syncText">未连接同步</span></div>
     <div class="install-banner" id="installBanner" onclick="triggerInstall()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><div class="ib-text">安装到桌面</div><div class="ib-sub">离线可用 · 像App一样</div></div></div>
@@ -1057,6 +1058,7 @@ function bind(){
     it.addEventListener('click',()=>{
       if(it.dataset.action==='export'){exportData();return}
       if(it.dataset.action==='import'){document.getElementById('fileInput').click();return}
+      if(it.dataset.action==='aikey'){openApiKey();return}
       if(it.dataset.action)return;
       document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
       it.classList.add('active');
@@ -1093,6 +1095,7 @@ function homeSave(){
   if(!text){toast('写点什么吧');ta.focus();return}
   const newId=uid();
   ideas.unshift({id:newId,title:text,content:'',stage:'spark',heat:homeHeat,time:homeTime,deadline:null,format:null,tags:[],links:{},metrics:{},createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+  ta.value='';
   save();
   updateCounts();
   // Play sound + fireworks
@@ -1898,8 +1901,13 @@ async function sbLoadCloud(){
     setSyncStatus('on','云端已连接');
     sbPushAll();
     if(!sbSubscribed)sbSubscribe();
-  }catch(e){sbReady=false;setSyncStatus('off','离线模式');setTimeout(()=>{if(sb)sbLoadCloud()},10000)}
+  }catch(e){
+    sbReady=false;setSyncStatus('off','云端连不上');
+    if(!sbFailNotified){sbFailNotified=true;toast('云端数据库连接失败，数据已保存在本地')}
+    setTimeout(()=>{if(sb)sbLoadCloud()},10000);
+  }
 }
+let sbFailNotified=false;
 
 function sbPushAll(){
   if(!sb||!sbReady)return;
