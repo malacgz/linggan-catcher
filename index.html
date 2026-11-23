@@ -712,6 +712,13 @@ textarea{resize:vertical;min-height:80px;line-height:1.6}
   .ai-output table{font-size:12px}
   .ai-output th,.ai-output td{padding:6px 8px}
 }
+/* 桌面版无边框窗口：可拖动区域 + 给右上角窗口按钮留位置 */
+body.electron .sb-head{-webkit-app-region:drag}
+body.electron .topbar{-webkit-app-region:drag;padding-right:150px}
+body.electron .topbar button,
+body.electron .topbar input,
+body.electron .topbar .search,
+body.electron .sidebar .nav-item{-webkit-app-region:no-drag}
 </style>
 </head>
 <body>
@@ -719,7 +726,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6}
 <div class="sb-backdrop" id="sbBackdrop" onclick="closeSidebar()"></div>
 <div class="app">
   <aside class="sidebar">
-    <div class="sb-head"><div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></div><div><div class="brand">灵感捕手</div><div class="brand-sub">Creative Pipeline</div></div></div>
+    <div class="sb-head"><div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></div><div><div class="brand">灵感捕手</div><div class="brand-sub">创意流水线</div></div></div>
     <nav class="nav" id="nav">
       <div class="nav-lbl">核心</div>
       <div class="nav-item active" data-view="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2 7 7L3 12zM12 5l2-2 7 7-2 2-7-7z"/><path d="M12 19l7-7"/></svg>速记</div>
@@ -2278,6 +2285,9 @@ function saveApiKey(){
   closeApiKey();
   toast(key?'AI Key 已保存':'AI Key 已清除');
 }
+
+// 桌面版（Electron）标记，用于无边框窗口的拖动区域
+if(window.electronAPI)document.body.classList.add('electron');
 
 init();
 </script>
