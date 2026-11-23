@@ -719,6 +719,15 @@ body.electron .topbar button,
 body.electron .topbar input,
 body.electron .topbar .search,
 body.electron .sidebar .nav-item{-webkit-app-region:no-drag}
+/* 速记页（主页）也能拖动窗口、双击最大化 */
+body.electron.home-mode .content{-webkit-app-region:drag}
+body.electron.home-mode .content button,
+body.electron.home-mode .content textarea,
+body.electron.home-mode .content input,
+body.electron.home-mode .content a,
+body.electron.home-mode .content select{-webkit-app-region:no-drag}
+body.electron .home-fab,
+body.electron .home-flyout{-webkit-app-region:no-drag}
 </style>
 </head>
 <body>
