@@ -913,6 +913,10 @@ function saveDeletedIds(){try{let a=Array.from(deletedIds);if(a.length>500)a.spl
 
 function loadData(){
   try{const r=localStorage.getItem(SK);if(r)ideas=JSON.parse(r)}catch(e){ideas=[]}
+  // 去重：同 id 只保留最后一条，避免同步/重复导入产生重复卡片
+  const seen=new Map();
+  ideas.forEach(i=>{if(i&&i.id)seen.set(i.id,i)});
+  ideas=Array.from(seen.values());
   // 每次加载都清理种子数据（不设标记，永远清理）
   cleanupSeeds();
 }
@@ -1791,7 +1795,7 @@ function getActive(){return ideas.filter(i=>!i.archived)}
 function searchFilter(list){if(!searchQ)return list;return list.filter(i=>i.title.toLowerCase().includes(searchQ)||(i.content||'').toLowerCase().includes(searchQ)||(i.tags||[]).some(t=>t.toLowerCase().includes(searchQ)))}
 function updateCounts(){const a=getActive();const smartCt=getCooldownAlerts().length+getExpiryAlerts().length;document.getElementById('ct-smart').textContent=smartCt;const flSmart=document.getElementById('fl-ct-smart');if(flSmart)flSmart.textContent=smartCt;STAGES.forEach(s=>{const ct=a.filter(i=>i.stage===s.key).length;const el=document.getElementById('ct-'+s.key);if(el)el.textContent=ct;const fl=document.getElementById('fl-ct-'+s.key);if(fl)fl.textContent=ct})}
 function exportData(){const d={version:4,exportedAt:new Date().toISOString(),ideas};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='灵感捕手_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(u);toast('已导出备份')}
-function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(!d.ideas||!Array.isArray(d.ideas))throw 0;if(confirm('即将导入'+d.ideas.length+'条灵感，确定合并？')){ideas=[...d.ideas,...ideas];save();render();updateCounts();toast('已导入'+d.ideas.length+'条')}}catch(err){toast('导入失败：格式错误')}};r.readAsText(f);e.target.value=''}
+function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(!d.ideas||!Array.isArray(d.ideas))throw 0;if(confirm('即将导入'+d.ideas.length+'条灵感，确定合并？')){const merged=new Map(ideas.filter(i=>i&&i.id).map(i=>[i.id,i]));d.ideas.forEach(i=>{if(i&&i.id)merged.set(i.id,i)});ideas=Array.from(merged.values());save();render();updateCounts();toast('已导入'+d.ideas.length+'条')}}catch(err){toast('导入失败：格式错误')}};r.readAsText(f);e.target.value=''}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function timeAgo(iso){const d=daysBtw(iso,new Date());if(d===0)return'今天';if(d===1)return'昨天';if(d<7)return d+'天前';if(d<30)return Math.floor(d/7)+'周前';return Math.floor(d/30)+'月前'}
@@ -1829,8 +1833,11 @@ function triggerInstall(){
 
 /* ===== Cloud Sync via Supabase ===== */
 let sb=null,sbReady=false;
-let sbPushTs=0,sbRenderTimer=null,sbDebounceTimer=null;
+let sbRenderTimer=null,sbDebounceTimer=null;
 let sbSubscribed=false;
+let pushedMap=new Map();      // id -> 已推送过的 updatedAt，用于只推变更
+let sbPushTsMap={};           // id -> 本次推送的 updated_at，用于忽略自己的回响
+function normTs(v){if(!v)return 0;if(typeof v==='number')return v;const t=Date.parse(v);return isNaN(t)?0:t}
 
 function setSyncStatus(s,t){
   const ind=document.getElementById('syncIndicator'),txt=document.getElementById('syncText');
@@ -1863,16 +1870,21 @@ async function sbLoadCloud(){
       let changed=false;
       const cloudIds=[];
       data.forEach(row=>{
-        if(row.data&&row.id){
-          cloudIds.push(row.id);
-          if(deletedIds.has(row.id))return;
-          const idx=ideas.findIndex(i=>i.id===row.id);
-          if(idx<0){ideas.push(row.data);changed=true}
-          else{
-            const localTs=new Date(ideas[idx].updatedAt||0).getTime();
-            const cloudTs=row.updated_at||0;
-            if(cloudTs>localTs){ideas[idx]=row.data;changed=true}
+        if(!row.data||!row.id)return;
+        cloudIds.push(row.id);
+        if(deletedIds.has(row.id))return;
+        const cloudTs=normTs(row.updated_at);
+        const idx=ideas.findIndex(i=>i.id===row.id);
+        if(idx<0){
+          ideas.push(row.data);changed=true;
+          pushedMap.set(row.id,row.data.updatedAt||'');
+        }else{
+          const localTs=new Date(ideas[idx].updatedAt||0).getTime();
+          if(cloudTs>localTs){
+            ideas[idx]=row.data;changed=true;
+            pushedMap.set(row.id,row.data.updatedAt||'');
           }
+          // 本地更新更新 → 故意不写入 pushedMap，交给 sbPushAll 上传
         }
       });
       // Clean up cloud: delete rows that were locally deleted
@@ -1893,21 +1905,27 @@ function sbPushAll(){
   if(!sb||!sbReady)return;
   if(sbDebounceTimer)clearTimeout(sbDebounceTimer);
   sbDebounceTimer=setTimeout(async()=>{
-    const ts=Date.now();
-    sbPushTs=ts;
-    const currentIds=ideas.map(i=>i.id);
-    const rows=ideas.map(i=>({id:i.id,data:i,updated_at:ts}));
     try{
-      if(rows.length>0){const{error}=await sb.from('ideas').upsert(rows);if(error)throw error}
-      // Clean up: delete cloud rows that no longer exist locally
-      const{data:cloudData,error:sErr}=await sb.from('ideas').select('id');
-      if(!sErr&&cloudData){
-        const staleIds=cloudData.map(r=>r.id).filter(id=>!currentIds.includes(id));
-        if(staleIds.length>0){
-          await sb.from('ideas').delete().in('id',staleIds);
-          staleIds.forEach(id=>deletedIds.delete(id));
-          saveDeletedIds();
-        }
+      // 只推送新增/修改过的灵感，避免整表覆盖造成多端互相冲掉数据
+      const rows=[],pushts={};
+      ideas.forEach(i=>{
+        const u=i.updatedAt||'';
+        if(pushedMap.get(i.id)===u)return;
+        const ts=new Date(u).getTime()||Date.now();
+        rows.push({id:i.id,data:i,updated_at:ts});
+        pushts[i.id]=ts;
+      });
+      if(rows.length>0){
+        sbPushTsMap=pushts;
+        const{error}=await sb.from('ideas').upsert(rows);
+        if(error)throw error;
+        rows.forEach(r=>pushedMap.set(r.id,r.data.updatedAt||''));
+      }
+      // 只删除本地明确删除的（墓碑），不再删除"云端有但本地没有"的行
+      if(deletedIds.size>0){
+        const ids=Array.from(deletedIds).slice(0,200);
+        const{error:dErr}=await sb.from('ideas').delete().in('id',ids);
+        if(!dErr){ids.forEach(id=>{deletedIds.delete(id);pushedMap.delete(id)});saveDeletedIds()}
       }
     }catch(e){}
   },800);
@@ -1937,9 +1955,9 @@ function sbSubscribe(){
 
 function handleSbChange(payload){
   const{eventType,new:newRow,old:oldRow}=payload;
-  // Skip echoes from our own pushes
-  if(newRow&&newRow.updated_at&&newRow.updated_at===sbPushTs)return;
-  // Skip rows that were locally deleted (tombstone)
+  // 忽略自己刚推送产生的回响
+  if(newRow&&newRow.id&&sbPushTsMap[newRow.id]!==undefined&&sbPushTsMap[newRow.id]===newRow.updated_at)return;
+  // 忽略本地已删除的（墓碑）
   if(newRow&&newRow.id&&deletedIds.has(newRow.id))return;
   let changed=false;
   if(eventType==='INSERT'||eventType==='UPDATE'){
@@ -1947,24 +1965,35 @@ function handleSbChange(payload){
       const idea=newRow.data;
       const idx=ideas.findIndex(i=>i.id===newRow.id);
       if(idx>=0){
-        const localTs=new Date(ideas[idx].updatedAt||0).getTime();
-        const cloudTs=newRow.updated_at||0;
-        if(cloudTs>localTs){ideas[idx]=idea;changed=true}
+        const localU=ideas[idx].updatedAt||'';
+        if(localU===(idea.updatedAt||''))return; // 数据完全一致，无需重绘
+        const localTs=new Date(localU||0).getTime();
+        if(normTs(newRow.updated_at)>localTs){ideas[idx]=idea;changed=true}
       }else{ideas.unshift(idea);changed=true}
+      pushedMap.set(newRow.id,idea.updatedAt||'');
     }
   }else if(eventType==='DELETE'){
     if(oldRow&&oldRow.id){
       const before=ideas.length;
       ideas=ideas.filter(i=>i.id!==oldRow.id);
-      if(ideas.length!==before)changed=true;
+      if(ideas.length!==before){changed=true;deletedIds.add(oldRow.id);saveDeletedIds()}
+      pushedMap.delete(oldRow.id);
     }
   }
   if(!changed)return;
   if(sbRenderTimer)clearTimeout(sbRenderTimer);
   sbRenderTimer=setTimeout(()=>{
     try{localStorage.setItem(SK,JSON.stringify(ideas))}catch(e){}
-    render();updateCounts();
+    renderPreserveScroll();updateCounts();
   },300);
+}
+
+/* 同步刷新时保留滚动位置，避免页面跳动 */
+function renderPreserveScroll(){
+  const c=document.getElementById('content');
+  const y=c?c.scrollTop:0;
+  render();
+  if(c)requestAnimationFrame(()=>{c.scrollTop=y});
 }
 
 /* ===== AI Idea Expansion ===== */
@@ -2087,22 +2116,35 @@ async function generateAI(idea){
 - **后期剪辑**：节奏、配乐、特效建议`;
 
   try{
-    const resp=await fetch('https://api.deepseek.com/chat/completions',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-      body:JSON.stringify({
-        model:'deepseek-chat',
-        messages:[{role:'user',content:prompt}],
-        temperature:0.8,
-        max_tokens:4096,
-        stream:false,
-      }),
-    });
-    if(!resp.ok){
-      const errData=await resp.json().catch(()=>({}));
-      throw new Error(errData.error?.message||('HTTP '+resp.status));
+    const reqBody={
+      model:'deepseek-chat',
+      messages:[{role:'user',content:prompt}],
+      temperature:0.8,
+      max_tokens:4096,
+      stream:false,
+    };
+    let data;
+    if(window.electronAPI&&window.electronAPI.chat){
+      // 桌面版：由主进程代发，避免 file:// 跨域
+      const r=await window.electronAPI.chat({apiKey:key,body:reqBody});
+      if(!r.ok){
+        let msg='HTTP '+r.status;
+        try{msg=JSON.parse(r.text).error.message||msg}catch(_){}
+        throw new Error(msg);
+      }
+      data=JSON.parse(r.text);
+    }else{
+      const resp=await fetch('https://api.deepseek.com/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+        body:JSON.stringify(reqBody),
+      });
+      if(!resp.ok){
+        const errData=await resp.json().catch(()=>({}));
+        throw new Error(errData.error?.message||('HTTP '+resp.status));
+      }
+      data=await resp.json();
     }
-    const data=await resp.json();
     const text=data.choices?.[0]?.message?.content||'';
     if(!text)throw new Error('返回内容为空');
     renderAIResult(text,idea);
