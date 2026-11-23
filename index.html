@@ -899,7 +899,7 @@ const PLATFORMS={
 };
 const FORMATS={short:'短视频',long:'长视频',image:'图文',commerce:'带货'};
 const SK='linggan_pipeline_v4',TK='linggan_theme_v2',DK='lg_deleted_v4';
-const SB_URL='https://uufbkzdbcgxmnlphggxa.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1ZmJremRiY2d4bW5scGhnZ3hhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzMzQyODMsImV4cCI6MjEwMDkxMDI4M30.xlztgrZ8UUIs-Degy9EYUJftw7XJ_ke7Ae6PbAUva-4';
+const SB_URL='https://fkgvadejluqtedkhqxid.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrZ3ZhZGVqbHVxdGVka2hxeGlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2NjgyMzMsImV4cCI6MjEwMjI0NDIzM30.ohaKDBgZafxyKxuOQqkboTzSd2xZBfPTcx4hRc9Wj6U';
 
 let ideas=[],view='home',stageFilter=null,filters={format:'all'},searchQ='',dcPlatform='all';
 let deletedIds=new Set();
@@ -1862,6 +1862,12 @@ function initSync(){
     setSyncStatus('connecting','连接云端…');
     sb=supabase.createClient(SB_URL,SB_KEY,{realtime:{params:{eventsPerSecond:5}}});
     sbLoadCloud();
+    // 兜底轮询：万一实时通道没开或断了，每30秒静默核对一次云端
+    if(!window._sbPollTimer){
+      window._sbPollTimer=setInterval(()=>{
+        if(sb&&sbReady&&document.visibilityState==='visible')sbLoadCloud();
+      },30000);
+    }
   }catch(e){setSyncStatus('off','同步不可用')}
 }
 
