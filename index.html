@@ -718,19 +718,24 @@ body.electron .topbar{-webkit-app-region:drag;padding-right:150px}
 body.electron .topbar button,
 body.electron .topbar input,
 body.electron .topbar .search,
-body.electron .sidebar .nav-item{-webkit-app-region:no-drag}
-/* 速记页（主页）也能拖动窗口、双击最大化 */
-body.electron.home-mode .content{-webkit-app-region:drag}
-body.electron.home-mode .content button,
-body.electron.home-mode .content textarea,
-body.electron.home-mode .content input,
-body.electron.home-mode .content a,
-body.electron.home-mode .content select{-webkit-app-region:no-drag}
+body.electron .sidebar .nav-item,
 body.electron .home-fab,
 body.electron .home-flyout{-webkit-app-region:no-drag}
+/* 速记页：顶部一条透明拖动条负责移窗/双击最大化。内容区不再整块可拖，否则会吞掉按钮点击 */
+.win-dragbar{display:none}
+body.electron.home-mode .win-dragbar{display:block;position:fixed;top:0;left:0;right:150px;height:36px;z-index:30;-webkit-app-region:drag}
+/* 浮层/弹窗压在拖动区上方时必须显式 no-drag，否则点击会被系统当成拖窗口 */
+body.electron .overlay,
+body.electron .expand-overlay,
+body.electron .cap-overlay,
+body.electron .api-key-overlay,
+body.electron .ctx,
+body.electron .toast,
+body.electron .batch-bar{-webkit-app-region:no-drag}
 </style>
 </head>
 <body>
+<div class="win-dragbar"></div>
 <div class="m-toggle" onclick="toggleSidebar()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></div>
 <div class="sb-backdrop" id="sbBackdrop" onclick="closeSidebar()"></div>
 <div class="app">
@@ -2029,6 +2034,8 @@ function renderPreserveScroll(){
 /* ===== AI Idea Expansion ===== */
 let capLastIdeaId=null;
 const DS_KEY='linggan_deepseek_key';
+// 内置 Key：留空时走设置里填的那一份；填了则开箱即用（设置里的优先）
+const DEFAULT_DS_KEY='';
 const PLATFORM_LINKS={
   douyin:{name:'抖音搜索',desc:'看看抖音上怎么拍',emoji:'🎵',bg:'#fff0f5',color:'#000',url:q=>'https://www.douyin.com/search/'+encodeURIComponent(q)},
   xhs:{name:'小红书搜索',desc:'找图文笔记灵感',emoji:'📕',bg:'#fff5f6',color:'#ff2442',url:q=>'https://www.xiaohongshu.com/search_result?keyword='+encodeURIComponent(q)},
@@ -2036,7 +2043,7 @@ const PLATFORM_LINKS={
   weibo:{name:'微博搜索',desc:'抓热点话题趋势',emoji:'🐦',bg:'#fff5f5',color:'#e6162d',url:q=>'https://s.weibo.com/weibo?q='+encodeURIComponent(q)},
   video:{name:'视频号搜索',desc:'微信生态内参考',emoji:'💚',bg:'#f0fff5',color:'#07c160',url:q=>'https://channels.weixin.qq.com/search?keyword='+encodeURIComponent(q)},
 };
-function getApiKey(){return localStorage.getItem(DS_KEY)||''}
+function getApiKey(){return localStorage.getItem(DS_KEY)||DEFAULT_DS_KEY}
 
 function openExpand(id){
   const idea=ideas.find(i=>i.id===id);
@@ -2341,12 +2348,28 @@ function pushDigest(){
   _dgTimer=setTimeout(()=>{try{electronAPI.updateDigest({morning:buildMorningDigest(),evening:buildEveningDigest()})}catch(e){}},600);
 }
 
+// 推送音效：上午/傍晚各一个，主进程到点时通过 play-sound 通知这里播放
+const _sndCache={};
+function playPushSound(kind){
+  try{
+    const f=kind==='morning'?'sounds/push-morning.wav':'sounds/push-evening.wav';
+    if(!_sndCache[f]){_sndCache[f]=new Audio(f);_sndCache[f].preload='auto'}
+    const a=_sndCache[f];
+    a.currentTime=0;a.volume=.85;
+    const p=a.play();
+    if(p&&p.catch)p.catch(()=>{});
+  }catch(e){}
+}
+
 // 桌面版（Electron）标记与推送联动
 if(window.electronAPI){
   document.body.classList.add('electron');
   if(electronAPI.onDigestInApp)electronAPI.onDigestInApp(d=>{toast('【'+(d.kind==='morning'?'今日推荐':'今日总结')+'】'+d.title)});
   if(electronAPI.onOpenIdea)electronAPI.onOpenIdea(id=>{goToView('pipeline');setTimeout(()=>{try{openModal(id)}catch(e){}},100)});
+  if(electronAPI.onPlaySound)electronAPI.onPlaySound(kind=>playPushSound(kind));
   setTimeout(pushDigest,1200);
+  // 每 3 分钟重算一次，保证傍晚那条的统计是当天最新的
+  setInterval(pushDigest,180000);
 }
 
 init();
