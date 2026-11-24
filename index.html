@@ -704,6 +704,41 @@ textarea{resize:vertical;min-height:80px;line-height:1.6}
 .api-key-box .btn-sec{background:var(--surface-3);color:var(--ink-2)}
 .api-key-box .btn-pri{background:var(--accent-grad);color:#fff}
 .ctx-item .ai-tag{font-size:10px;font-weight:600;padding:1px 6px;border-radius:8px;background:var(--accent-soft);color:var(--accent);margin-left:auto}
+/* 推送设置弹窗 */
+.push-overlay{position:fixed;inset:0;background:rgba(20,15,10,.5);backdrop-filter:blur(6px);z-index:180;display:none;align-items:center;justify-content:center;padding:20px}
+.push-overlay.show{display:flex}
+.push-box{background:var(--surface);border-radius:var(--r-xl);width:100%;max-width:660px;max-height:88vh;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);animation:capPop .35s cubic-bezier(.16,1,.3,1)}
+.push-head{padding:22px 26px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+.push-head h3{font-family:var(--ff-display);font-size:20px;font-weight:600}
+.push-head .ph-sub{font-size:12px;color:var(--ink-3)}
+.push-head .pc{margin-left:auto;width:32px;height:32px;border:none;background:var(--surface-2);border-radius:50%;color:var(--ink-2);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.push-head .pc:hover{background:var(--surface-3);color:var(--ink)}
+.push-head .pc svg{width:16px;height:16px}
+.push-body{padding:18px 26px 8px;overflow-y:auto}
+.push-sec{margin-bottom:22px}
+.push-sec>h4{font-size:11px;font-weight:800;letter-spacing:.8px;color:var(--ink-3);text-transform:uppercase;margin-bottom:10px}
+.slot-row{display:flex;align-items:center;gap:9px;padding:9px 11px;border:1px solid var(--line);border-radius:var(--r-md);margin-bottom:8px;background:var(--surface-2);flex-wrap:wrap}
+.slot-row.off{opacity:.55}
+.slot-row .slot-on{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
+.slot-time{width:92px;padding:6px 8px;border:1px solid var(--line-2);border-radius:var(--r-sm);background:var(--surface);color:var(--ink);font-family:var(--ff-body);font-size:13px;outline:none}
+.slot-time:focus{border-color:var(--accent)}
+.slot-kind{padding:6px 8px;border:1px solid var(--line-2);border-radius:var(--r-sm);background:var(--surface);color:var(--ink);font-size:13px;font-family:var(--ff-body);outline:none;cursor:pointer}
+.week-chips{display:flex;gap:3px;margin-left:auto}
+.wchip{width:24px;height:24px;border:1px solid var(--line-2);background:var(--surface);border-radius:6px;font-size:11px;color:var(--ink-3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--ff-body);transition:all .12s}
+.wchip:hover{border-color:var(--accent)}
+.wchip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700}
+.slot-del{width:24px;height:24px;border:none;background:transparent;color:var(--ink-3);cursor:pointer;font-size:13px;border-radius:6px}
+.slot-del:hover{background:var(--warn-bg);color:var(--warn)}
+.push-add{width:100%;padding:9px;border:1px dashed var(--line-2);border-radius:var(--r-md);background:transparent;color:var(--ink-3);font-size:12.5px;font-family:var(--ff-body);cursor:pointer;transition:all .15s}
+.push-add:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:7px 13px;border:1px solid var(--line-2);border-radius:20px;background:var(--surface);font-size:12.5px;color:var(--ink-2);cursor:pointer;font-family:var(--ff-body);transition:all .12s}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.push-foot{padding:14px 26px 18px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end}
+.push-foot .pbtn{padding:9px 20px;border-radius:var(--r-sm);border:none;cursor:pointer;font-family:var(--ff-body);font-size:13.5px;font-weight:600}
+.push-foot .pbtn-sec{background:var(--surface-3);color:var(--ink-2)}
+.push-foot .pbtn-pri{background:var(--accent-grad);color:#fff}
 @media(max-width:768px){
   .expand-overlay{padding:0}
   .expand-panel{max-width:100%;min-height:100vh;border-radius:0}
@@ -729,6 +764,7 @@ body.electron .overlay,
 body.electron .expand-overlay,
 body.electron .cap-overlay,
 body.electron .api-key-overlay,
+body.electron .push-overlay,
 body.electron .ctx,
 body.electron .toast,
 body.electron .batch-bar{-webkit-app-region:no-drag}
@@ -763,7 +799,7 @@ body.electron .batch-bar{-webkit-app-region:no-drag}
     </nav>
     <div class="sync-indicator sync-off" id="syncIndicator"><span class="sync-dot"></span><span id="syncText">未连接同步</span></div>
     <div class="install-banner" id="installBanner" onclick="triggerInstall()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><div class="ib-text">安装到桌面</div><div class="ib-sub">离线可用 · 像App一样</div></div></div>
-    <div class="sb-foot"><button class="tbtn" id="themeBtn" title="切换主题"><svg id="iMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg id="iSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></button><div class="ft" id="storageInfo">本地存储<br>私密安全</div></div>
+    <div class="sb-foot"><button class="tbtn" onclick="openPushCfg()" title="推送设置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button><button class="tbtn" id="themeBtn" title="切换主题"><svg id="iMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg id="iSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg></button><div class="ft" id="storageInfo">本地存储<br>私密安全</div></div>
   </aside>
   <main class="main">
     <div class="topbar"><h1 id="pageTitle">速记</h1><span class="sub" id="pageSub"></span><div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input type="text" id="searchInput" placeholder="搜索灵感…"></div><button class="batch-toggle" id="batchToggle" onclick="enterBatchMode()" title="批量操作"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M17.5 14.5v6M14.5 17.5h6"/></svg></button></div>
@@ -820,6 +856,7 @@ body.electron .batch-bar{-webkit-app-region:no-drag}
   <div class="fl-item" onclick="exportData()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出备份</div>
   <div class="fl-item" onclick="document.getElementById('fileInput').click()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>导入备份</div>
   <div class="fl-div"></div>
+  <div class="fl-item" onclick="openPushCfg()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>推送设置</div>
   <div class="fl-item" onclick="openApiKey()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z"/><circle cx="12" cy="12" r="3"/></svg>AI 文案设置</div>
 </div>
 <div class="ctx" id="ctxMenu"></div>
@@ -898,6 +935,40 @@ body.electron .batch-bar{-webkit-app-region:no-drag}
     <div class="actions">
       <button class="btn btn-sec" onclick="closeApiKey()">取消</button>
       <button class="btn btn-pri" onclick="saveApiKey()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 推送设置 -->
+<div class="push-overlay" id="pushOverlay" onclick="if(event.target===this)closePushCfg()">
+  <div class="push-box">
+    <div class="push-head">
+      <h3>推送设置</h3>
+      <span class="ph-sub">到点提醒 · 每天最多 4 条</span>
+      <button class="pc" onclick="closePushCfg()" title="关闭"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="push-body">
+      <div class="push-sec">
+        <h4>推送时间</h4>
+        <div id="slotList"></div>
+        <button class="push-add" id="slotAddBtn" onclick="addSlot()">+ 添加一个时间点</button>
+      </div>
+      <div class="push-sec">
+        <h4>早间推荐包含</h4>
+        <div class="chips" id="mcChips"></div>
+      </div>
+      <div class="push-sec">
+        <h4>晚间总结包含</h4>
+        <div class="chips" id="ecChips"></div>
+      </div>
+      <div class="push-sec">
+        <h4>文案语气</h4>
+        <div class="chips" id="toneChips"></div>
+      </div>
+    </div>
+    <div class="push-foot">
+      <button class="pbtn pbtn-sec" onclick="closePushCfg()">取消</button>
+      <button class="pbtn pbtn-pri" onclick="savePushCfg()">保存</button>
     </div>
   </div>
 </div>
@@ -2304,48 +2375,177 @@ function saveApiKey(){
 
 // ===== 每日推送：早间推荐 / 晚间小结 =====
 function _isToday(ts){return !!ts&&new Date(ts).toDateString()===new Date().toDateString()}
-function buildMorningDigest(){
-  const t=new Date();
-  const active=ideas.filter(i=>['spark','cand','plan','prod'].includes(i.stage));
-  if(!active.length)return {kind:'morning',title:'💡 库里还是空的',body:'花 3 秒记下一个念头就好，剩下的交给我。'};
-  const urgent=active.filter(i=>i.time==='trend'&&i.deadline&&daysBtw(t,new Date(i.deadline))>=-1&&daysBtw(t,new Date(i.deadline))<=3).sort((a,b)=>score(b)-score(a));
-  if(urgent.length){const i=urgent[0],left=Math.max(0,daysBtw(t,new Date(i.deadline)));
-    return {kind:'morning',ideaId:i.id,title:`${left<=0?'⏳ 今天最后一天':'⏳ 热点还剩 '+left+' 天'}：${i.title}`,body:`时效选题，再不动就废了。建议今天先拍粗剪版，先发后补。`};}
-  const stalled=active.filter(i=>i.heat>=4&&daysBtw(i.updatedAt,t)>=7).sort((a,b)=>score(b)-score(a));
-  if(stalled.length){const i=stalled[0];
-    return {kind:'morning',ideaId:i.id,title:`🔥 今天最该拍：${i.title}`,body:`你给了 ${i.heat} 星热度，放了 ${daysBtw(i.updatedAt,t)} 天还没动，现在在「${STAGE_MAP[i.stage].name}」。花 10 分钟往前推一步就行。`};}
-  const making=active.filter(i=>i.stage==='prod').sort((a,b)=>score(b)-score(a));
-  if(making.length){const i=making[0];
-    return {kind:'morning',ideaId:i.id,title:`🎬 今天把它收尾：${i.title}`,body:`已经在「制作中」，搁了 ${daysBtw(i.updatedAt,t)} 天。哪怕只剪 30 秒，也比放着强。`};}
-  const cand=active.filter(i=>i.stage==='cand').sort((a,b)=>score(b)-score(a));
-  if(cand.length){const i=cand[0];
-    return {kind:'morning',ideaId:i.id,title:`📝 今天可以轻松点：${i.title}`,body:`没有临期选题。把这条候选补个大纲，20 分钟的事，明天就能开拍。`};}
-  const last=active.sort((a,b)=>score(b)-score(a))[0];
-  return {kind:'morning',ideaId:last.id,title:`☕ 今天看看这条：${last.title}`,body:'库里没有紧急项，按自己的节奏推进就好。'};
+
+/* ---- 推送设置 ---- */
+const PUSH_CFG_KEY='linggan_push_cfg';
+const WEEK_NAMES=['日','一','二','三','四','五','六'];
+const MORNING_CATS=[['trend','时效热点'],['stale','高热度搁置'],['prod','制作中收尾'],['cand','候选补大纲'],['fallback','兜底看看']];
+const EVENING_CATS=[['published','今日发布'],['summary','今日小结'],['cold','冷置提醒']];
+const TONES=[['simple','简洁'],['detailed','详细'],['humor','幽默'],['gentle','温柔']];
+const PUSH_DEFAULTS={
+  slots:[
+    {on:true,time:'10:00',kind:'morning',days:[0,1,2,3,4,5,6]},
+    {on:true,time:'18:00',kind:'evening',days:[0,1,2,3,4,5,6]}
+  ],
+  morning:{trend:true,stale:true,prod:true,cand:true,fallback:true},
+  evening:{published:true,summary:true,cold:true},
+  tone:'detailed'
+};
+function getPushCfg(){
+  let raw={};
+  try{raw=JSON.parse(localStorage.getItem(PUSH_CFG_KEY))||{}}catch(e){}
+  let slots=Array.isArray(raw.slots)?raw.slots.slice(0,4).map(s=>({
+    on:s.on!==false,
+    time:/^\d{1,2}:\d{2}$/.test(s.time||'')?s.time:'10:00',
+    kind:s.kind==='evening'?'evening':'morning',
+    days:Array.isArray(s.days)&&s.days.length?s.days.filter(d=>d>=0&&d<=6):[0,1,2,3,4,5,6]
+  })):[];
+  if(!slots.length)slots=JSON.parse(JSON.stringify(PUSH_DEFAULTS.slots));
+  return {
+    slots,
+    morning:{...PUSH_DEFAULTS.morning,...(raw.morning||{})},
+    evening:{...PUSH_DEFAULTS.evening,...(raw.evening||{})},
+    tone:TONES.some(t=>t[0]===raw.tone)?raw.tone:PUSH_DEFAULTS.tone
+  };
 }
-function buildEveningDigest(){
+function setPushCfg(cfg){
+  localStorage.setItem(PUSH_CFG_KEY,JSON.stringify(cfg));
+  pushDigest();
+}
+
+// 语气：简洁只留第一句；幽默/温柔在结尾补一句，按日期轮换
+function _toneBody(base,tone){
+  if(!base)return base;
+  if(tone==='simple'){const m=base.match(/^[^。！？!?]*[。！？!?]/);return (m?m[0]:base).trim()}
+  if(tone==='humor'){const a=[' 别让它在库里长蘑菇。',' 再拖下去就成古董了。',' 动一下，比完美更管用。'];return base+a[new Date().getDate()%a.length]}
+  if(tone==='gentle'){const a=[' 做一点就算赢。',' 哪怕只推进十分钟。',' 慢慢来，不用逼自己。'];return base+a[new Date().getDate()%a.length]}
+  return base;
+}
+
+function buildMorningDigest(cfg){
+  cfg=cfg||getPushCfg();
+  const c=cfg.morning,tone=cfg.tone,t=new Date();
+  const active=ideas.filter(i=>['spark','cand','plan','prod'].includes(i.stage));
+  if(!active.length){
+    return c.fallback?{kind:'morning',title:'💡 库里还是空的',body:_toneBody('花 3 秒记下一个念头就好，剩下的交给我。',tone)}:null;
+  }
+  if(c.trend){
+    const urgent=active.filter(i=>i.time==='trend'&&i.deadline&&daysBtw(t,new Date(i.deadline))>=-1&&daysBtw(t,new Date(i.deadline))<=3).sort((a,b)=>score(b)-score(a));
+    if(urgent.length){const i=urgent[0],left=Math.max(0,daysBtw(t,new Date(i.deadline)));
+      return {kind:'morning',ideaId:i.id,title:`${left<=0?'⏳ 今天最后一天':'⏳ 热点还剩 '+left+' 天'}：${i.title}`,body:_toneBody('时效选题，再不动就废了。建议今天先拍粗剪版，先发后补。',tone)};}
+  }
+  if(c.stale){
+    const stalled=active.filter(i=>i.heat>=4&&daysBtw(i.updatedAt,t)>=7).sort((a,b)=>score(b)-score(a));
+    if(stalled.length){const i=stalled[0];
+      return {kind:'morning',ideaId:i.id,title:`🔥 今天最该拍：${i.title}`,body:_toneBody(`你给了 ${i.heat} 星热度，放了 ${daysBtw(i.updatedAt,t)} 天还没动，现在在「${STAGE_MAP[i.stage].name}」。花 10 分钟往前推一步就行。`,tone)};}
+  }
+  if(c.prod){
+    const making=active.filter(i=>i.stage==='prod').sort((a,b)=>score(b)-score(a));
+    if(making.length){const i=making[0];
+      return {kind:'morning',ideaId:i.id,title:`🎬 今天把它收尾：${i.title}`,body:_toneBody(`已经在「制作中」，搁了 ${daysBtw(i.updatedAt,t)} 天。哪怕只剪 30 秒，也比放着强。`,tone)};}
+  }
+  if(c.cand){
+    const cand=active.filter(i=>i.stage==='cand').sort((a,b)=>score(b)-score(a));
+    if(cand.length){const i=cand[0];
+      return {kind:'morning',ideaId:i.id,title:`📝 今天可以轻松点：${i.title}`,body:_toneBody('没有临期选题。把这条候选补个大纲，20 分钟的事，明天就能开拍。',tone)};}
+  }
+  if(c.fallback){
+    const last=active.sort((a,b)=>score(b)-score(a))[0];
+    return {kind:'morning',ideaId:last.id,title:`☕ 今天看看这条：${last.title}`,body:_toneBody('库里没有紧急项，按自己的节奏推进就好。',tone)};
+  }
+  return null;
+}
+
+function buildEveningDigest(cfg){
+  cfg=cfg||getPushCfg();
+  const c=cfg.evening,tone=cfg.tone;
   const created=ideas.filter(i=>_isToday(i.createdAt));
   const moved=ideas.filter(i=>_isToday(i.updatedAt)&&!_isToday(i.createdAt));
-  const published=moved.filter(i=>i.stage==='pub');
-  const advanced=moved.filter(i=>i.stage!=='pub');
-  if(published.length){
-    const i=published[0];
-    return {kind:'evening',title:`🎉 今天发布了 ${published.length} 条`,body:`「${i.title}」已上线，记得明天回填播放数据——系统会记住哪类选题真的有效。`};
+  if(c.published){
+    const published=moved.filter(i=>i.stage==='pub');
+    if(published.length){
+      const i=published[0];
+      return {kind:'evening',title:`🎉 今天发布了 ${published.length} 条`,body:_toneBody(`「${i.title}」已上线，记得明天回填播放数据——系统会记住哪类选题真的有效。`,tone)};
+    }
   }
-  if(created.length||advanced.length){
-    const top=advanced[0]||created[0];
-    let body=`新增灵感 ${created.length} 条 · 推进 ${advanced.length} 条。`;
-    if(top)body+=`「${top.title}」往前一步了。`;
-    return {kind:'evening',ideaId:top&&top.id,title:'📊 今日小结',body};
+  if(c.summary){
+    const advanced=moved.filter(i=>i.stage!=='pub');
+    if(created.length||advanced.length){
+      const top=advanced[0]||created[0];
+      let body=`新增灵感 ${created.length} 条 · 推进 ${advanced.length} 条。`;
+      if(top)body+=`「${top.title}」往前一步了。`;
+      return {kind:'evening',ideaId:top&&top.id,title:'📊 今日小结',body:_toneBody(body,tone)};
+    }
   }
-  const cold=ideas.filter(i=>['spark','cand','plan'].includes(i.stage)&&i.heat>=4).length;
-  return {kind:'evening',title:'🌙 今天静悄悄',body:cold?`今天没记录。睡前 30 秒，把今天最想说的一句话丢进库里就够了。库里还有 ${cold} 条高热度在冷着。`:'今天没记录。睡前 30 秒，把今天最想说的一句话丢进库里就够了。今天算休息，不算断更。'};
+  if(c.cold){
+    const cold=ideas.filter(i=>['spark','cand','plan'].includes(i.stage)&&i.heat>=4).length;
+    return {kind:'evening',title:'🌙 今天静悄悄',body:_toneBody(cold?`今天没记录。睡前 30 秒，把今天最想说的一句话丢进库里就够了。库里还有 ${cold} 条高热度在冷着。`:'今天没记录。睡前 30 秒，把今天最想说的一句话丢进库里就够了。今天算休息，不算断更。',tone)};
+  }
+  return null;
 }
+
 let _dgTimer=null;
 function pushDigest(){
   if(!window.electronAPI||!electronAPI.updateDigest)return;
   clearTimeout(_dgTimer);
-  _dgTimer=setTimeout(()=>{try{electronAPI.updateDigest({morning:buildMorningDigest(),evening:buildEveningDigest()})}catch(e){}},600);
+  _dgTimer=setTimeout(()=>{
+    try{
+      const cfg=getPushCfg();
+      electronAPI.updateDigest({morning:buildMorningDigest(cfg),evening:buildEveningDigest(cfg),slots:cfg.slots});
+    }catch(e){}
+  },600);
+}
+
+/* ---- 推送设置面板 ---- */
+let _pushDraft=null;
+function openPushCfg(){
+  _pushDraft=getPushCfg();
+  renderPushCfg();
+  document.getElementById('pushOverlay').classList.add('show');
+}
+function closePushCfg(){document.getElementById('pushOverlay').classList.remove('show')}
+function renderPushCfg(){
+  const cfg=_pushDraft;
+  document.getElementById('slotList').innerHTML=cfg.slots.map((s,i)=>`
+    <div class="slot-row${s.on?'':' off'}">
+      <input type="checkbox" class="slot-on" ${s.on?'checked':''} onchange="slotSet(${i},'on',this.checked)" title="启用这条">
+      <input type="time" class="slot-time" value="${s.time}" onchange="slotSet(${i},'time',this.value)">
+      <select class="slot-kind" onchange="slotSet(${i},'kind',this.value)">
+        <option value="morning"${s.kind==='morning'?' selected':''}>今日推荐</option>
+        <option value="evening"${s.kind==='evening'?' selected':''}>今日总结</option>
+      </select>
+      <div class="week-chips">${WEEK_NAMES.map((n,d)=>`<button type="button" class="wchip${s.days.includes(d)?' on':''}" onclick="slotDay(${i},${d})">${n}</button>`).join('')}</div>
+      ${cfg.slots.length>1?`<button type="button" class="slot-del" onclick="slotDel(${i})" title="删除这个时间点">✕</button>`:''}
+    </div>`).join('');
+  document.getElementById('slotAddBtn').style.display=cfg.slots.length>=4?'none':'';
+  const chip=(on,label,fn)=>`<button type="button" class="chip${on?' on':''}" onclick="${fn}">${label}</button>`;
+  document.getElementById('mcChips').innerHTML=MORNING_CATS.map(([k,l])=>chip(cfg.morning[k],l,`toggleCat('morning','${k}')`)).join('');
+  document.getElementById('ecChips').innerHTML=EVENING_CATS.map(([k,l])=>chip(cfg.evening[k],l,`toggleCat('evening','${k}')`)).join('');
+  document.getElementById('toneChips').innerHTML=TONES.map(([k,l])=>chip(cfg.tone===k,l,`setTone('${k}')`)).join('');
+}
+function slotSet(i,k,v){_pushDraft.slots[i][k]=v;renderPushCfg()}
+function slotDay(i,d){
+  const s=_pushDraft.slots[i];
+  if(s.days.includes(d))s.days=s.days.filter(x=>x!==d);
+  else s.days=s.days.concat(d).sort((a,b)=>a-b);
+  renderPushCfg();
+}
+function slotDel(i){_pushDraft.slots.splice(i,1);renderPushCfg()}
+function addSlot(){
+  if(_pushDraft.slots.length>=4)return;
+  _pushDraft.slots.push({on:true,time:'12:00',kind:'morning',days:[0,1,2,3,4,5,6]});
+  renderPushCfg();
+}
+function toggleCat(sec,k){_pushDraft[sec][k]=!_pushDraft[sec][k];renderPushCfg()}
+function setTone(k){_pushDraft.tone=k;renderPushCfg()}
+function savePushCfg(){
+  if(!_pushDraft.slots.length){toast('至少保留一个时间点');return}
+  for(const s of _pushDraft.slots){
+    if(s.on&&!s.days.length){toast('启用的时间点至少要选一天');return}
+  }
+  setPushCfg(_pushDraft);
+  closePushCfg();
+  toast('推送设置已保存');
 }
 
 // 推送音效：上午/傍晚各一个，主进程到点时通过 play-sound 通知这里播放
@@ -2367,6 +2567,7 @@ if(window.electronAPI){
   if(electronAPI.onDigestInApp)electronAPI.onDigestInApp(d=>{toast('【'+(d.kind==='morning'?'今日推荐':'今日总结')+'】'+d.title)});
   if(electronAPI.onOpenIdea)electronAPI.onOpenIdea(id=>{goToView('pipeline');setTimeout(()=>{try{openModal(id)}catch(e){}},100)});
   if(electronAPI.onPlaySound)electronAPI.onPlaySound(kind=>playPushSound(kind));
+  if(electronAPI.onOpenPushSettings)electronAPI.onOpenPushSettings(()=>openPushCfg());
   setTimeout(pushDigest,1200);
   // 每 3 分钟重算一次，保证傍晚那条的统计是当天最新的
   setInterval(pushDigest,180000);

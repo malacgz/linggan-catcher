@@ -1,4 +1,4 @@
-const CACHE_NAME = 'linggan-catcher-v22';
+const CACHE_NAME = 'linggan-catcher-v23';
 const ASSETS = ['./', './index.html', './manifest.json', './icon.svg', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './supabase.js'];
 
 self.addEventListener('install', (e) => {
