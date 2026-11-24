@@ -2355,7 +2355,7 @@ function playPushSound(kind){
     const f=kind==='morning'?'sounds/push-morning.wav':'sounds/push-evening.wav';
     if(!_sndCache[f]){_sndCache[f]=new Audio(f);_sndCache[f].preload='auto'}
     const a=_sndCache[f];
-    a.currentTime=0;a.volume=.85;
+    a.currentTime=0;a.volume=.6;
     const p=a.play();
     if(p&&p.catch)p.catch(()=>{});
   }catch(e){}
