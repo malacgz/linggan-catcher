@@ -26,6 +26,7 @@
   --st-plan:#2563eb;--st-plan-bg:#eff4ff;
   --st-prod:#ea580c;--st-prod-bg:#fff3ed;
   --st-pub:#059669;--st-pub-bg:#ecfdf5;
+  --st-prep:#db2777;--st-prep-bg:#fdf2f8;
   --st-reuse:#0d9488;--st-reuse-bg:#effaf6;
   --warn:#dc2626;--warn-bg:#fef2f2;
   --cool:#0891b2;--cool-bg:#ecfeff;
@@ -49,6 +50,7 @@
   --accent:#f97316;--accent-2:#fb923c;--accent-soft:#2a1810;--accent-grad:linear-gradient(135deg,#ea580c,#f97316);
   --st-spark:#a78bfa;--st-spark-bg:#1e1729;--st-cand:#fbbf24;--st-cand-bg:#241d10;
   --st-plan:#60a5fa;--st-plan-bg:#13202e;--st-prod:#fb923c;--st-prod-bg:#241a10;
+  --st-prep:#f472b6;--st-prep-bg:#2a1620;
   --st-pub:#34d399;--st-pub-bg:#0f2419;--st-reuse:#2dd4bf;--st-reuse-bg:#0f2622;
   --warn:#f87171;--warn-bg:#2a1513;--cool:#22d3ee;--cool-bg:#0f2628;
   --p-douyin-bg:#2a2222;--p-xhs-bg:#2a1518;--p-video-bg:#0f2419;--p-weibo-bg:#2a1515;--p-bili-bg:#0f2430;
@@ -304,7 +306,7 @@ body.home-mode .content{padding:0}
 .pipe-head.s-plan .dot{color:var(--st-plan)}
 .pipe-head.s-prod .dot{color:var(--st-prod)}
 .pipe-head.s-pub .dot{color:var(--st-pub)}
-.pipe-head.s-reuse .dot{color:var(--st-reuse)}
+.pipe-head.s-prep .dot{color:var(--st-prep)}
 .pipe-head h3{font-family:var(--ff-display);font-size:17px;font-weight:600;display:flex;align-items:center;gap:8px}
 .pipe-head h3 .emoji{font-size:16px}
 .pipe-head .ct{font-size:12px;font-weight:700;background:var(--surface-3);padding:2px 10px;border-radius:20px;color:var(--ink-3)}
@@ -375,7 +377,7 @@ body.batch-mode .card-act{display:none}
 .card.s-plan::before{background:var(--st-plan)}
 .card.s-prod::before{background:var(--st-prod)}
 .card.s-pub::before{background:var(--st-pub)}
-.card.s-reuse::before{background:var(--st-reuse)}
+.card.s-prep::before{background:var(--st-prep)}
 .commerce-bar{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-sm);background:linear-gradient(135deg,#fef3c7,#fde68a);margin-top:10px;font-size:12px;font-weight:600;color:#92400e}
 .commerce-bar .em{font-size:14px}
 .commerce-bar .amt{margin-left:auto;font-family:var(--ff-display);font-size:15px}
@@ -534,7 +536,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6}
 .stage-pill[data-s="plan"].on{background:var(--st-plan)}
 .stage-pill[data-s="prod"].on{background:var(--st-prod)}
 .stage-pill[data-s="pub"].on{background:var(--st-pub)}
-.stage-pill[data-s="reuse"].on{background:var(--st-reuse)}
+.stage-pill[data-s="prep"].on{background:var(--st-prep)}
 .dl-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .m-foot{display:flex;gap:10px;justify-content:space-between;padding-top:6px;border-top:1px solid var(--line);margin-top:8px;padding-top:16px}
 .btn{padding:10px 20px;border-radius:var(--r-sm);border:none;cursor:pointer;font-family:var(--ff-body);font-size:13.5px;font-weight:600;transition:all .15s}
@@ -786,11 +788,11 @@ body.electron .batch-bar{-webkit-app-region:no-drag}
       <div class="nav-item" data-view="data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="11" width="3" height="7"/><rect x="14" y="7" width="3" height="11"/></svg>数据中心</div>
       <div class="nav-lbl">阶段</div>
       <div class="nav-item" data-view="stage" data-stage="spark"><span class="nav-dot" style="background:var(--st-spark)"></span>一闪而过<span class="ct" id="ct-spark">0</span></div>
-      <div class="nav-item" data-view="stage" data-stage="cand"><span class="nav-dot" style="background:var(--st-cand)"></span>拍摄脚本<span class="ct" id="ct-cand">0</span></div>
-      <div class="nav-item" data-view="stage" data-stage="plan"><span class="nav-dot" style="background:var(--st-plan)"></span>已拍摄<span class="ct" id="ct-plan">0</span></div>
+      <div class="nav-item" data-view="stage" data-stage="prep"><span class="nav-dot" style="background:var(--st-prep)"></span>前期策划<span class="ct" id="ct-prep">0</span></div>
+      <div class="nav-item" data-view="stage" data-stage="cand"><span class="nav-dot" style="background:var(--st-cand)"></span>文案脚本<span class="ct" id="ct-cand">0</span></div>
+      <div class="nav-item" data-view="stage" data-stage="plan"><span class="nav-dot" style="background:var(--st-plan)"></span>拍摄中<span class="ct" id="ct-plan">0</span></div>
       <div class="nav-item" data-view="stage" data-stage="prod"><span class="nav-dot" style="background:var(--st-prod)"></span>剪辑中<span class="ct" id="ct-prod">0</span></div>
       <div class="nav-item" data-view="stage" data-stage="pub"><span class="nav-dot" style="background:var(--st-pub)"></span>已发布<span class="ct" id="ct-pub">0</span></div>
-      <div class="nav-item" data-view="stage" data-stage="reuse"><span class="nav-dot" style="background:var(--st-reuse)"></span>可复用<span class="ct" id="ct-reuse">0</span></div>
       <div class="nav-lbl">数据</div>
       <div class="nav-item" data-view="archived"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/></svg>归档</div>
       <div class="nav-item" data-action="export"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出备份</div>
@@ -847,11 +849,11 @@ body.electron .batch-bar{-webkit-app-region:no-drag}
   <div class="fl-item" onclick="goToView('data')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="11" width="3" height="7"/><rect x="14" y="7" width="3" height="11"/></svg>数据中心</div>
   <div class="fl-div"></div>
   <div class="fl-item" onclick="goToStage('spark')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-spark)"></span>一闪而过<span class="ct" id="fl-ct-spark">0</span></div>
-  <div class="fl-item" onclick="goToStage('cand')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-cand)"></span>拍摄脚本<span class="ct" id="fl-ct-cand">0</span></div>
-  <div class="fl-item" onclick="goToStage('plan')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-plan)"></span>已拍摄<span class="ct" id="fl-ct-plan">0</span></div>
+  <div class="fl-item" onclick="goToStage('prep')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-prep)"></span>前期策划<span class="ct" id="fl-ct-prep">0</span></div>
+  <div class="fl-item" onclick="goToStage('cand')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-cand)"></span>文案脚本<span class="ct" id="fl-ct-cand">0</span></div>
+  <div class="fl-item" onclick="goToStage('plan')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-plan)"></span>拍摄中<span class="ct" id="fl-ct-plan">0</span></div>
   <div class="fl-item" onclick="goToStage('prod')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-prod)"></span>剪辑中<span class="ct" id="fl-ct-prod">0</span></div>
   <div class="fl-item" onclick="goToStage('pub')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-pub)"></span>已发布<span class="ct" id="fl-ct-pub">0</span></div>
-  <div class="fl-item" onclick="goToStage('reuse')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-reuse)"></span>可复用<span class="ct" id="fl-ct-reuse">0</span></div>
   <div class="fl-div"></div>
   <div class="fl-item" onclick="exportData()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出备份</div>
   <div class="fl-item" onclick="document.getElementById('fileInput').click()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>导入备份</div>
@@ -975,11 +977,11 @@ body.electron .batch-bar{-webkit-app-region:no-drag}
 <script>
 const STAGES=[
   {key:'spark',name:'一闪而过',emoji:'💡',desc:'刚捕获的念头',color:'var(--st-spark)',hint:'<b>一闪而过</b>阶段只需记录核心想法。热度、时效帮你判断值不值得做，其他的等推进到下一步再补。'},
-  {key:'cand',name:'拍摄脚本',emoji:'📝',desc:'值得做成内容',color:'var(--st-cand)',hint:'<b>拍摄脚本</b>阶段：补充展开描述，确定内容形式，把选题写成能直接开拍的脚本。'},
-  {key:'plan',name:'已拍摄',emoji:'🗂',desc:'素材已经拍好',color:'var(--st-plan)',hint:'<b>已拍摄</b>阶段：整理素材、确定剪辑思路和发布时间，准备进入剪辑。'},
+  {key:'prep',name:'前期策划',emoji:'🧭',desc:'定方向、找参考',color:'var(--st-prep)',hint:'<b>前期策划</b>阶段：想清楚做给谁看、核心角度和参考内容，再往下写脚本。'},
+  {key:'cand',name:'文案脚本',emoji:'📝',desc:'文案/脚本成形',color:'var(--st-cand)',hint:'<b>文案脚本</b>阶段：把选题写成能直接开拍的文案和分镜。'},
+  {key:'plan',name:'拍摄中',emoji:'🎥',desc:'正在拍摄',color:'var(--st-plan)',hint:'<b>拍摄中</b>阶段：记录拍摄进度、待补镜头和素材位置。'},
   {key:'prod',name:'剪辑中',emoji:'🎬',desc:'正在剪辑',color:'var(--st-prod)',hint:'<b>剪辑中</b>阶段：记录剪辑备注、进度和待办，方便随时查看。'},
   {key:'pub',name:'已发布',emoji:'✅',desc:'已上线',color:'var(--st-pub)',hint:'<b>已发布</b>阶段：内容已上线。可以去数据中心回填各平台链接和数据。'},
-  {key:'reuse',name:'可复用',emoji:'♻️',desc:'可翻新/二创',color:'var(--st-reuse)',hint:'<b>可复用</b>阶段：记录复用想法和翻新方向，素材可以二次利用。'},
 ];
 const STAGE_MAP=Object.fromEntries(STAGES.map(s=>[s.key,s]));
 const PLATFORMS={
@@ -1012,6 +1014,18 @@ function loadData(){
   ideas=Array.from(seen.values());
   // 每次加载都清理种子数据（不设标记，永远清理）
   cleanupSeeds();
+  if(migrateStages()){try{localStorage.setItem(SK,JSON.stringify(ideas))}catch(e){}}
+}
+
+// 阶段调整后的数据迁移：旧「可复用」并入「已发布」，未知阶段回到「一闪而过」
+function migrateStages(){
+  let changed=false;
+  ideas.forEach(i=>{
+    if(!i)return;
+    if(i.stage==='reuse'){i.stage='pub';changed=true}
+    else if(!STAGE_MAP[i.stage]){i.stage='spark';changed=true}
+  });
+  return changed;
 }
 function cleanupSeeds(){
   const before=ideas.length;
@@ -1034,13 +1048,13 @@ function score(i){
     if(i.deadline){const d=daysBtw(new Date(),new Date(i.deadline));if(d<=0)s+=80;else if(d<=2)s+=60;else if(d<=5)s+=35;else s+=15}
     else{const age=daysBtw(i.createdAt,new Date());if(age>=2)s+=40;else s+=20}
   }
-  if(i.heat>=4&&(i.stage==='spark'||i.stage==='cand')){const stall=daysBtw(i.updatedAt,new Date());if(stall>=3)s+=25}
+  if(i.heat>=4&&(i.stage==='spark'||i.stage==='prep'||i.stage==='cand')){const stall=daysBtw(i.updatedAt,new Date());if(stall>=3)s+=25}
   return s;
 }
 function sortByScore(a,b){return score(b)-score(a)}
-function getCooldownAlerts(){return ideas.filter(i=>{if(i.archived||i.stage==='pub'||i.stage==='reuse')return false;if(i.heat<4)return false;return daysBtw(i.updatedAt,new Date())>=3})}
+function getCooldownAlerts(){return ideas.filter(i=>{if(i.archived||i.stage==='pub')return false;if(i.heat<4)return false;return daysBtw(i.updatedAt,new Date())>=3})}
 function getExpiryAlerts(){return ideas.filter(i=>{if(i.archived||i.stage==='pub')return false;if(i.time!=='trend')return false;if(i.deadline){const d=daysBtw(new Date(),new Date(i.deadline));return d>=-1&&d<=2}return daysBtw(i.createdAt,new Date())>=2})}
-function getWeeklyRecs(){return ideas.filter(i=>!i.archived&&['spark','cand','plan'].includes(i.stage)).sort(sortByScore).slice(0,3)}
+function getWeeklyRecs(){return ideas.filter(i=>!i.archived&&['spark','prep','cand','plan'].includes(i.stage)).sort(sortByScore).slice(0,3)}
 
 function buildHeat(){document.getElementById('heatRow').innerHTML=[1,2,3,4,5].map(n=>`<button class="heat-btn ${n<=edHeat?'on':''}" data-h="${n}" onclick="setHeat(${n})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg></button>`).join('')}
 function setHeat(n){edHeat=n;buildHeat()}
@@ -1074,20 +1088,29 @@ function toggleStageFields(stage){
     fgHeat.style.display='block';
     fgTime.style.display='block';
     fgTags.style.display='block';
-  }else if(stage==='cand'){
-    // Add content and format
+  }else if(stage==='prep'){
+    // 前期策划：方向、受众、参考
     fgContent.style.display='block';
-    lblContent.innerHTML='展开描述 <span class="opt">选题角度、参考、关键词</span>';
-    eContent.placeholder='这个选题的核心角度是什么？参考了哪些内容？';
+    lblContent.innerHTML='策划思路 <span class="opt">方向、受众、参考</span>';
+    eContent.placeholder='这条内容想做给谁看？核心角度是什么？参考了哪些内容？';
+    fgHeat.style.display='block';
+    fgTime.style.display='block';
+    fgFormat.style.display='block';
+    fgTags.style.display='block';
+  }else if(stage==='cand'){
+    // 文案脚本
+    fgContent.style.display='block';
+    lblContent.innerHTML='文案 / 脚本 <span class="opt">开头、正文、分镜</span>';
+    eContent.placeholder='开头…\n正文…\n分镜/画面…';
     fgHeat.style.display='block';
     fgTime.style.display='block';
     fgFormat.style.display='block';
     fgTags.style.display='block';
   }else if(stage==='plan'){
-    // Outline-focused
+    // 拍摄中
     fgContent.style.display='block';
-    lblContent.innerHTML='大纲 / 分镜 <span class="opt">结构、段落、拍摄要点</span>';
-    eContent.placeholder='开头…\n中间…\n结尾…\n拍摄要点…';
+    lblContent.innerHTML='拍摄备注 <span class="opt">进度、待补镜头、素材位置</span>';
+    eContent.placeholder='拍完了哪些…\n还差哪些镜头…\n素材放在哪…';
     fgHeat.style.display='block';
     fgTime.style.display='block';
     fgFormat.style.display='block';
@@ -1095,8 +1118,8 @@ function toggleStageFields(stage){
   }else if(stage==='prod'){
     // Production notes
     fgContent.style.display='block';
-    lblContent.innerHTML='制作备注 <span class="opt">进度、待办、素材说明</span>';
-    eContent.placeholder='拍摄进度…\n待补镜头…\n剪辑要点…';
+    lblContent.innerHTML='剪辑备注 <span class="opt">进度、待办、素材说明</span>';
+    eContent.placeholder='剪辑进度…\n待补镜头…\n剪辑要点…';
     fgFormat.style.display='block';
     fgTags.style.display='block';
   }else if(stage==='pub'){
@@ -1105,12 +1128,6 @@ function toggleStageFields(stage){
     lblContent.innerHTML='发布备注 <span class="opt">发布时间、平台说明</span>';
     eContent.placeholder='发布情况、各平台表现备注…';
     fgFormat.style.display='block';
-    fgTags.style.display='block';
-  }else if(stage==='reuse'){
-    // Reuse ideas
-    fgContent.style.display='block';
-    lblContent.innerHTML='复用方向 <span class="opt">翻新思路、二创角度</span>';
-    eContent.placeholder='可以怎么翻新？哪些素材可以复用？';
     fgTags.style.display='block';
   }
   // After setting format visibility, check commerce fields
@@ -1342,7 +1359,7 @@ function openModal(id){
     const i=ideas.find(x=>x.id===id);if(!i)return;
     const s=STAGE_MAP[i.stage];
     const cs=getComputedStyle(document.documentElement);
-    const colors={spark:'--st-spark',cand:'--st-cand',plan:'--st-plan',prod:'--st-prod',pub:'--st-pub',reuse:'--st-reuse'};
+    const colors={spark:'--st-spark',prep:'--st-prep',cand:'--st-cand',plan:'--st-plan',prod:'--st-prod',pub:'--st-pub'};
     const badgeColor=cs.getPropertyValue(colors[i.stage]).trim()||'#c2410c';
     document.getElementById('mTitle').innerHTML='编辑灵感 <span class="m-stage-badge" style="background:'+badgeColor+';color:#fff">'+s.emoji+' '+s.name+'</span>';
     document.getElementById('eId').value=i.id;
@@ -1623,7 +1640,7 @@ function setFilter(v){filters.format=v;render()}
 
 /* ===== Data Center: Detailed platform breakdown ===== */
 function renderData(c){
-  const published=ideas.filter(i=>(i.stage==='pub'||i.stage==='reuse')&&!i.archived);
+  const published=ideas.filter(i=>i.stage==='pub'&&!i.archived);
   const platformKeys=['douyin','xhs','video','weibo','bili'];
 
   // Overview stats
@@ -1684,7 +1701,7 @@ function renderData(c){
 
 function renderDcItem(i){
   const cs=getComputedStyle(document.documentElement);
-  const colors={spark:'--st-spark',cand:'--st-cand',plan:'--st-plan',prod:'--st-prod',pub:'--st-pub',reuse:'--st-reuse'};
+  const colors={spark:'--st-spark',prep:'--st-prep',cand:'--st-cand',plan:'--st-plan',prod:'--st-prod',pub:'--st-pub'};
   const stageColor=cs.getPropertyValue(colors[i.stage]).trim()||'#888';
   const platformsWithData=Object.keys(i.links||{});
   let linkHtml='',metricsHtml='';
@@ -1792,7 +1809,7 @@ function showCtx(e,id){
   e.stopPropagation();
   const i=ideas.find(x=>x.id===id);if(!i)return;
   const m=document.getElementById('ctxMenu');
-  const order=['spark','cand','plan','prod','pub','reuse'];
+  const order=['spark','prep','cand','plan','prod','pub'];
   const idx=order.indexOf(i.stage);
   let items=`<div class="ctx-item" onclick="openModal('${id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>编辑</div>`;
   if(idx<order.length-1){const ns=order[idx+1];items+=`<div class="ctx-item" onclick="advance('${id}','${ns}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>推进至「${STAGE_MAP[ns].name}」</div>`}
@@ -1814,7 +1831,7 @@ function deleteIdea(id){if(!confirm('确定删除这条灵感？此操作不可�
 
 /* ===== Batch Operations ===== */
 let batchSelected=new Set();
-const STAGE_ORDER=['spark','cand','plan','prod','pub','reuse'];
+const STAGE_ORDER=['spark','prep','cand','plan','prod','pub'];
 
 function enterBatchMode(){
   if(view==='home'||view==='data'){toast('此页面不支持批量操作');return}
@@ -1890,7 +1907,7 @@ function getActive(){return ideas.filter(i=>!i.archived)}
 function searchFilter(list){if(!searchQ)return list;return list.filter(i=>i.title.toLowerCase().includes(searchQ)||(i.content||'').toLowerCase().includes(searchQ)||(i.tags||[]).some(t=>t.toLowerCase().includes(searchQ)))}
 function updateCounts(){const a=getActive();const smartCt=getCooldownAlerts().length+getExpiryAlerts().length;document.getElementById('ct-smart').textContent=smartCt;const flSmart=document.getElementById('fl-ct-smart');if(flSmart)flSmart.textContent=smartCt;STAGES.forEach(s=>{const ct=a.filter(i=>i.stage===s.key).length;const el=document.getElementById('ct-'+s.key);if(el)el.textContent=ct;const fl=document.getElementById('fl-ct-'+s.key);if(fl)fl.textContent=ct})}
 function exportData(){const d={version:4,exportedAt:new Date().toISOString(),ideas};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='灵感捕手_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(u);toast('已导出备份')}
-function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(!d.ideas||!Array.isArray(d.ideas))throw 0;if(confirm('即将导入'+d.ideas.length+'条灵感，确定合并？')){const merged=new Map(ideas.filter(i=>i&&i.id).map(i=>[i.id,i]));d.ideas.forEach(i=>{if(i&&i.id)merged.set(i.id,i)});ideas=Array.from(merged.values());save();render();updateCounts();toast('已导入'+d.ideas.length+'条')}}catch(err){toast('导入失败：格式错误')}};r.readAsText(f);e.target.value=''}
+function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(!d.ideas||!Array.isArray(d.ideas))throw 0;if(confirm('即将导入'+d.ideas.length+'条灵感，确定合并？')){const merged=new Map(ideas.filter(i=>i&&i.id).map(i=>[i.id,i]));d.ideas.forEach(i=>{if(i&&i.id)merged.set(i.id,i)});ideas=Array.from(merged.values());migrateStages();save();render();updateCounts();toast('已导入'+d.ideas.length+'条')}}catch(err){toast('导入失败：格式错误')}};r.readAsText(f);e.target.value=''}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function timeAgo(iso){const d=daysBtw(iso,new Date());if(d===0)return'今天';if(d===1)return'昨天';if(d<7)return d+'天前';if(d<30)return Math.floor(d/7)+'周前';return Math.floor(d/30)+'月前'}
@@ -1993,6 +2010,7 @@ async function sbLoadCloud(){
       if(staleInCloud.length>0){
         try{await sb.from('ideas').delete().in('id',staleInCloud)}catch(e){}
       }
+      if(migrateStages())changed=true;
       if(changed){try{localStorage.setItem(SK,JSON.stringify(ideas))}catch(e){}render();updateCounts()}
     }
     sbReady=true;
@@ -2087,6 +2105,7 @@ function handleSbChange(payload){
     }
   }
   if(!changed)return;
+  migrateStages();
   if(sbRenderTimer)clearTimeout(sbRenderTimer);
   sbRenderTimer=setTimeout(()=>{
     try{localStorage.setItem(SK,JSON.stringify(ideas))}catch(e){}
@@ -2379,7 +2398,7 @@ function _isToday(ts){return !!ts&&new Date(ts).toDateString()===new Date().toDa
 /* ---- 推送设置 ---- */
 const PUSH_CFG_KEY='linggan_push_cfg';
 const WEEK_NAMES=['日','一','二','三','四','五','六'];
-const MORNING_CATS=[['trend','时效热点'],['stale','高热度搁置'],['prod','剪辑中收尾'],['cand','补拍摄脚本'],['fallback','兜底看看']];
+const MORNING_CATS=[['trend','时效热点'],['stale','高热度搁置'],['prod','剪辑中收尾'],['cand','补文案脚本'],['fallback','兜底看看']];
 const EVENING_CATS=[['published','今日发布'],['summary','今日小结'],['cold','冷置提醒']];
 const TONES=[['simple','简洁'],['detailed','详细'],['humor','幽默'],['gentle','温柔']];
 const PUSH_DEFAULTS={
@@ -2425,7 +2444,7 @@ function _toneBody(base,tone){
 function buildMorningDigest(cfg){
   cfg=cfg||getPushCfg();
   const c=cfg.morning,tone=cfg.tone,t=new Date();
-  const active=ideas.filter(i=>['spark','cand','plan','prod'].includes(i.stage));
+  const active=ideas.filter(i=>['spark','prep','cand','plan','prod'].includes(i.stage));
   if(!active.length){
     return c.fallback?{kind:'morning',title:'💡 库里还是空的',body:_toneBody('花 3 秒记下一个念头就好，剩下的交给我。',tone)}:null;
   }
@@ -2447,7 +2466,7 @@ function buildMorningDigest(cfg){
   if(c.cand){
     const cand=active.filter(i=>i.stage==='cand').sort((a,b)=>score(b)-score(a));
     if(cand.length){const i=cand[0];
-      return {kind:'morning',ideaId:i.id,title:`📝 今天可以轻松点：${i.title}`,body:_toneBody('没有临期选题。把这条拍摄脚本补完，20 分钟的事，明天就能开拍。',tone)};}
+      return {kind:'morning',ideaId:i.id,title:`📝 今天可以轻松点：${i.title}`,body:_toneBody('没有临期选题。把这条文案脚本补完，20 分钟的事，明天就能开拍。',tone)};}
   }
   if(c.fallback){
     const last=active.sort((a,b)=>score(b)-score(a))[0];
@@ -2478,7 +2497,7 @@ function buildEveningDigest(cfg){
     }
   }
   if(c.cold){
-    const cold=ideas.filter(i=>['spark','cand','plan'].includes(i.stage)&&i.heat>=4).length;
+    const cold=ideas.filter(i=>['spark','prep','cand','plan'].includes(i.stage)&&i.heat>=4).length;
     return {kind:'evening',title:'🌙 今天静悄悄',body:_toneBody(cold?`今天没记录。睡前 30 秒，把今天最想说的一句话丢进库里就够了。库里还有 ${cold} 条高热度在冷着。`:'今天没记录。睡前 30 秒，把今天最想说的一句话丢进库里就够了。今天算休息，不算断更。',tone)};
   }
   return null;
