@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<meta name="description" content="灵感捕手 - 创作者的灵感流水线">
+<meta name="description" content="灵感捕手 - 记录每个一闪而过的念头">
 <meta name="theme-color" content="#c2410c">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=Manrope:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-<title>灵感捕手 · 灵感流水线</title>
+<title>灵感捕手</title>
 <style>
 :root{
   --bg:#f5f1ea;--surface:#fffdf9;--surface-2:#faf6ef;--surface-3:#f0ebe1;
@@ -776,19 +776,19 @@ body.electron .batch-bar{-webkit-app-region:no-drag}
 <div class="sb-backdrop" id="sbBackdrop" onclick="closeSidebar()"></div>
 <div class="app">
   <aside class="sidebar">
-    <div class="sb-head"><div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></div><div><div class="brand">灵感捕手</div><div class="brand-sub">创意流水线</div></div></div>
+    <div class="sb-head"><div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></div><div><div class="brand">灵感捕手</div><div class="brand-sub">抓住那些瞬间</div></div></div>
     <nav class="nav" id="nav">
       <div class="nav-lbl">核心</div>
       <div class="nav-item active" data-view="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2 7 7L3 12zM12 5l2-2 7 7-2 2-7-7z"/><path d="M12 19l7-7"/></svg>速记</div>
-      <div class="nav-item" data-view="pipeline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/></svg>流水线</div>
+      <div class="nav-item" data-view="pipeline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/></svg>灵感旅程</div>
       <div class="nav-item" data-view="smart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M12 6v6l4 2"/></svg>本周推荐<span class="ct" id="ct-smart">0</span></div>
       <div class="nav-item" data-view="library"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>灵感库</div>
       <div class="nav-item" data-view="data"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="11" width="3" height="7"/><rect x="14" y="7" width="3" height="11"/></svg>数据中心</div>
       <div class="nav-lbl">阶段</div>
       <div class="nav-item" data-view="stage" data-stage="spark"><span class="nav-dot" style="background:var(--st-spark)"></span>一闪而过<span class="ct" id="ct-spark">0</span></div>
-      <div class="nav-item" data-view="stage" data-stage="cand"><span class="nav-dot" style="background:var(--st-cand)"></span>选题候选<span class="ct" id="ct-cand">0</span></div>
-      <div class="nav-item" data-view="stage" data-stage="plan"><span class="nav-dot" style="background:var(--st-plan)"></span>已立项<span class="ct" id="ct-plan">0</span></div>
-      <div class="nav-item" data-view="stage" data-stage="prod"><span class="nav-dot" style="background:var(--st-prod)"></span>制作中<span class="ct" id="ct-prod">0</span></div>
+      <div class="nav-item" data-view="stage" data-stage="cand"><span class="nav-dot" style="background:var(--st-cand)"></span>拍摄脚本<span class="ct" id="ct-cand">0</span></div>
+      <div class="nav-item" data-view="stage" data-stage="plan"><span class="nav-dot" style="background:var(--st-plan)"></span>已拍摄<span class="ct" id="ct-plan">0</span></div>
+      <div class="nav-item" data-view="stage" data-stage="prod"><span class="nav-dot" style="background:var(--st-prod)"></span>剪辑中<span class="ct" id="ct-prod">0</span></div>
       <div class="nav-item" data-view="stage" data-stage="pub"><span class="nav-dot" style="background:var(--st-pub)"></span>已发布<span class="ct" id="ct-pub">0</span></div>
       <div class="nav-item" data-view="stage" data-stage="reuse"><span class="nav-dot" style="background:var(--st-reuse)"></span>可复用<span class="ct" id="ct-reuse">0</span></div>
       <div class="nav-lbl">数据</div>
@@ -832,7 +832,7 @@ body.electron .batch-bar{-webkit-app-region:no-drag}
         <div class="hint" id="commerceHint" style="margin-top:8px"></div>
       </div>
       <div class="fg" id="fg-tags"><label>标签 <span class="opt">逗号分隔</span></label><input class="inp" id="eTags" placeholder="情感, 自驾, 周末"></div>
-      <div class="fg"><label>流水线阶段</label><div class="stage-pills" id="stagePills"></div></div>
+      <div class="fg"><label>旅程阶段</label><div class="stage-pills" id="stagePills"></div></div>
       <div class="m-foot"><button class="btn btn-del" id="btnDel" style="display:none">删除</button><button class="btn btn-sec" id="btnExpand" onclick="if(document.getElementById('eId').value)openExpand(document.getElementById('eId').value)" style="display:none">✨ 灵感拓展</button><div style="display:flex;gap:10px;margin-left:auto"><button class="btn btn-sec" onclick="closeModal()">取消</button><button class="btn btn-pri" id="btnSave">保存</button></div></div>
     </div>
   </div>
@@ -841,15 +841,15 @@ body.electron .batch-bar{-webkit-app-region:no-drag}
 <button class="home-fab" id="homeFab" onclick="toggleFlyout(event)" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
 <div class="home-flyout" id="homeFlyout">
   <div class="fl-title">导航</div>
-  <div class="fl-item" onclick="goToView('pipeline')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/></svg>流水线</div>
+  <div class="fl-item" onclick="goToView('pipeline')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/></svg>灵感旅程</div>
   <div class="fl-item" onclick="goToView('smart')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M12 6v6l4 2"/></svg>本周推荐<span class="ct" id="fl-ct-smart">0</span></div>
   <div class="fl-item" onclick="goToView('library')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>灵感库</div>
   <div class="fl-item" onclick="goToView('data')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="11" width="3" height="7"/><rect x="14" y="7" width="3" height="11"/></svg>数据中心</div>
   <div class="fl-div"></div>
   <div class="fl-item" onclick="goToStage('spark')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-spark)"></span>一闪而过<span class="ct" id="fl-ct-spark">0</span></div>
-  <div class="fl-item" onclick="goToStage('cand')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-cand)"></span>选题候选<span class="ct" id="fl-ct-cand">0</span></div>
-  <div class="fl-item" onclick="goToStage('plan')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-plan)"></span>已立项<span class="ct" id="fl-ct-plan">0</span></div>
-  <div class="fl-item" onclick="goToStage('prod')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-prod)"></span>制作中<span class="ct" id="fl-ct-prod">0</span></div>
+  <div class="fl-item" onclick="goToStage('cand')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-cand)"></span>拍摄脚本<span class="ct" id="fl-ct-cand">0</span></div>
+  <div class="fl-item" onclick="goToStage('plan')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-plan)"></span>已拍摄<span class="ct" id="fl-ct-plan">0</span></div>
+  <div class="fl-item" onclick="goToStage('prod')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-prod)"></span>剪辑中<span class="ct" id="fl-ct-prod">0</span></div>
   <div class="fl-item" onclick="goToStage('pub')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-pub)"></span>已发布<span class="ct" id="fl-ct-pub">0</span></div>
   <div class="fl-item" onclick="goToStage('reuse')"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-reuse)"></span>可复用<span class="ct" id="fl-ct-reuse">0</span></div>
   <div class="fl-div"></div>
@@ -881,7 +881,7 @@ body.electron .batch-bar{-webkit-app-region:no-drag}
       </svg>
     </div>
     <div class="cap-title">灵感已捕获</div>
-    <div class="cap-sub">已存入「一闪而过」，随时可以去流水线推进</div>
+    <div class="cap-sub">已存入「一闪而过」，随时可以去灵感旅程推进</div>
     <div class="cap-preview">
       <div class="cap-preview-lbl">你刚才记下的</div>
       <div class="cap-preview-txt" id="capPreviewTxt"></div>
@@ -975,9 +975,9 @@ body.electron .batch-bar{-webkit-app-region:no-drag}
 <script>
 const STAGES=[
   {key:'spark',name:'一闪而过',emoji:'💡',desc:'刚捕获的念头',color:'var(--st-spark)',hint:'<b>一闪而过</b>阶段只需记录核心想法。热度、时效帮你判断值不值得做，其他的等推进到下一步再补。'},
-  {key:'cand',name:'选题候选',emoji:'📝',desc:'值得做成内容',color:'var(--st-cand)',hint:'<b>选题候选</b>阶段：补充展开描述，确定内容形式，让选题更具体可执行。'},
-  {key:'plan',name:'已立项',emoji:'🗂',desc:'有大纲了',color:'var(--st-plan)',hint:'<b>已立项</b>阶段：完善大纲/分镜，确定内容形式和截止日期，准备进入制作。'},
-  {key:'prod',name:'制作中',emoji:'🎬',desc:'正在拍摄/剪辑',color:'var(--st-prod)',hint:'<b>制作中</b>阶段：记录制作备注、进度和待办，方便随时查看。'},
+  {key:'cand',name:'拍摄脚本',emoji:'📝',desc:'值得做成内容',color:'var(--st-cand)',hint:'<b>拍摄脚本</b>阶段：补充展开描述，确定内容形式，把选题写成能直接开拍的脚本。'},
+  {key:'plan',name:'已拍摄',emoji:'🗂',desc:'素材已经拍好',color:'var(--st-plan)',hint:'<b>已拍摄</b>阶段：整理素材、确定剪辑思路和发布时间，准备进入剪辑。'},
+  {key:'prod',name:'剪辑中',emoji:'🎬',desc:'正在剪辑',color:'var(--st-prod)',hint:'<b>剪辑中</b>阶段：记录剪辑备注、进度和待办，方便随时查看。'},
   {key:'pub',name:'已发布',emoji:'✅',desc:'已上线',color:'var(--st-pub)',hint:'<b>已发布</b>阶段：内容已上线。可以去数据中心回填各平台链接和数据。'},
   {key:'reuse',name:'可复用',emoji:'♻️',desc:'可翻新/二创',color:'var(--st-reuse)',hint:'<b>可复用</b>阶段：记录复用想法和翻新方向，素材可以二次利用。'},
 ];
@@ -1421,7 +1421,7 @@ function render(){
   }else{
     body.classList.remove('home-mode');
     fab.style.display='none';
-    if(view==='pipeline'){pt.textContent='流水线';ps.textContent='从捕捉到发布的完整旅程';renderPipeline(c)}
+    if(view==='pipeline'){pt.textContent='灵感旅程';ps.textContent='从捕捉到发布的完整旅程';renderPipeline(c)}
     else if(view==='smart'){pt.textContent='本周推荐';ps.textContent='让系统帮你做决策';renderSmart(c)}
     else if(view==='library'){pt.textContent='灵感库';ps.textContent='全部灵感，多维筛选';renderLibrary(c)}
     else if(view==='data'){pt.textContent='数据中心';ps.textContent='各平台数据追踪与回填';renderData(c)}
@@ -1489,7 +1489,7 @@ function renderHome(c){
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/></svg>
           </div>
           <div class="t">进入灵感空间</div>
-          <div class="d">流水线、灵感库、数据中心<br>整理和推进你的创意</div>
+          <div class="d">灵感旅程、灵感库、数据中心<br>整理和推进你的创意</div>
           <div class="arr">打开空间 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
         </button>
       </div>
@@ -1670,7 +1670,7 @@ function renderData(c){
   items.sort((a,b)=>{const bv=Object.values(b.metrics||{}).reduce((s,m)=>s+(m.views||0),0);const av=Object.values(a.metrics||{}).reduce((s,m)=>s+(m.views||0),0);return bv-av});
 
   if(items.length===0){
-    html+=`<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><h3>还没有数据</h3><p>${dcPlatform==='all'?'发布内容后在流水线推进到「已发布」，然后回来回填链接':'这个平台还没有回填链接的作品'}</p></div>`;
+    html+=`<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><h3>还没有数据</h3><p>${dcPlatform==='all'?'发布内容后在灵感旅程推进到「已发布」，然后回来回填链接':'这个平台还没有回填链接的作品'}</p></div>`;
   }else{
     html+=`<div class="dc-section"><h3>${dcPlatform==='all'?'全部已发布作品':PLATFORMS[dcPlatform].name+'作品'}（${items.length}）</h3>`;
     items.forEach(i=>{
@@ -1776,7 +1776,7 @@ function saveManualMetrics(id,p){
 function renderStageView(c){
   let list=searchFilter(ideas.filter(i=>!i.archived&&i.stage===stageFilter));
   list.sort(sortByScore);
-  if(list.length===0){c.innerHTML=`<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/></svg><h3>这里还没有灵感</h3><p>去速记页捕捉，或从流水线推进过来</p></div>`;return}
+  if(list.length===0){c.innerHTML=`<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/></svg><h3>这里还没有灵感</h3><p>去速记页捕捉，或从灵感旅程推进过来</p></div>`;return}
   c.innerHTML=`<div class="grid stagger">${list.map(i=>cardHTML(i,true)).join('')}</div>`;
   syncBatchSelection();
 }
@@ -2379,7 +2379,7 @@ function _isToday(ts){return !!ts&&new Date(ts).toDateString()===new Date().toDa
 /* ---- 推送设置 ---- */
 const PUSH_CFG_KEY='linggan_push_cfg';
 const WEEK_NAMES=['日','一','二','三','四','五','六'];
-const MORNING_CATS=[['trend','时效热点'],['stale','高热度搁置'],['prod','制作中收尾'],['cand','候选补大纲'],['fallback','兜底看看']];
+const MORNING_CATS=[['trend','时效热点'],['stale','高热度搁置'],['prod','剪辑中收尾'],['cand','补拍摄脚本'],['fallback','兜底看看']];
 const EVENING_CATS=[['published','今日发布'],['summary','今日小结'],['cold','冷置提醒']];
 const TONES=[['simple','简洁'],['detailed','详细'],['humor','幽默'],['gentle','温柔']];
 const PUSH_DEFAULTS={
@@ -2442,12 +2442,12 @@ function buildMorningDigest(cfg){
   if(c.prod){
     const making=active.filter(i=>i.stage==='prod').sort((a,b)=>score(b)-score(a));
     if(making.length){const i=making[0];
-      return {kind:'morning',ideaId:i.id,title:`🎬 今天把它收尾：${i.title}`,body:_toneBody(`已经在「制作中」，搁了 ${daysBtw(i.updatedAt,t)} 天。哪怕只剪 30 秒，也比放着强。`,tone)};}
+      return {kind:'morning',ideaId:i.id,title:`🎬 今天把它收尾：${i.title}`,body:_toneBody(`已经在「${STAGE_MAP[i.stage].name}」，搁了 ${daysBtw(i.updatedAt,t)} 天。哪怕只剪 30 秒，也比放着强。`,tone)};}
   }
   if(c.cand){
     const cand=active.filter(i=>i.stage==='cand').sort((a,b)=>score(b)-score(a));
     if(cand.length){const i=cand[0];
-      return {kind:'morning',ideaId:i.id,title:`📝 今天可以轻松点：${i.title}`,body:_toneBody('没有临期选题。把这条候选补个大纲，20 分钟的事，明天就能开拍。',tone)};}
+      return {kind:'morning',ideaId:i.id,title:`📝 今天可以轻松点：${i.title}`,body:_toneBody('没有临期选题。把这条拍摄脚本补完，20 分钟的事，明天就能开拍。',tone)};}
   }
   if(c.fallback){
     const last=active.sort((a,b)=>score(b)-score(a))[0];

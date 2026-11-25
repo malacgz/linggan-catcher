@@ -1,7 +1,7 @@
 {
-  "name": "灵感捕手 · 灵感流水线",
+  "name": "灵感捕手",
   "short_name": "灵感捕手",
-  "description": "创作者的灵感流水线 - 从捕捉到孵化到推进",
+  "description": "记录每个一闪而过的念头 - 从捕捉到孵化到推进",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "any",
