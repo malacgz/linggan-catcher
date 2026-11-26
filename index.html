@@ -2444,7 +2444,7 @@ function _toneBody(base,tone){
 function buildMorningDigest(cfg){
   cfg=cfg||getPushCfg();
   const c=cfg.morning,tone=cfg.tone,t=new Date();
-  const active=ideas.filter(i=>['spark','prep','cand','plan','prod'].includes(i.stage));
+  const active=ideas.filter(i=>!i.archived&&['spark','prep','cand','plan','prod'].includes(i.stage));
   if(!active.length){
     return c.fallback?{kind:'morning',title:'💡 库里还是空的',body:_toneBody('花 3 秒记下一个念头就好，剩下的交给我。',tone)}:null;
   }
@@ -2478,8 +2478,8 @@ function buildMorningDigest(cfg){
 function buildEveningDigest(cfg){
   cfg=cfg||getPushCfg();
   const c=cfg.evening,tone=cfg.tone;
-  const created=ideas.filter(i=>_isToday(i.createdAt));
-  const moved=ideas.filter(i=>_isToday(i.updatedAt)&&!_isToday(i.createdAt));
+  const created=ideas.filter(i=>!i.archived&&_isToday(i.createdAt));
+  const moved=ideas.filter(i=>!i.archived&&_isToday(i.updatedAt)&&!_isToday(i.createdAt));
   if(c.published){
     const published=moved.filter(i=>i.stage==='pub');
     if(published.length){
@@ -2497,7 +2497,7 @@ function buildEveningDigest(cfg){
     }
   }
   if(c.cold){
-    const cold=ideas.filter(i=>['spark','prep','cand','plan'].includes(i.stage)&&i.heat>=4).length;
+    const cold=ideas.filter(i=>!i.archived&&['spark','prep','cand','plan'].includes(i.stage)&&i.heat>=4).length;
     return {kind:'evening',title:'🌙 今天静悄悄',body:_toneBody(cold?`今天没记录。睡前 30 秒，把今天最想说的一句话丢进库里就够了。库里还有 ${cold} 条高热度在冷着。`:'今天没记录。睡前 30 秒，把今天最想说的一句话丢进库里就够了。今天算休息，不算断更。',tone)};
   }
   return null;
