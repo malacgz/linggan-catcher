@@ -1000,7 +1000,7 @@ let deletedIds=new Set();
 let edHeat=3,edTime='ever',edStage='spark';
 let homeHeat=3,homeTime='ever';
 
-const SEED_TITLES=['两人一车一周末｜自驾露营vlog','已婚无娃的快乐系列','city walk小众路线推荐','标题库：用反差感制造好奇','夕阳逆光人像拍摄技巧','一个人也要好好吃饭','周末情侣vlog翻新','独居女生的周末早晨'];
+const SEED_TITLES=['两人一车一周末｜自驾露营vlog','已婚无娃的快乐系列','city walk小众路线推荐','标题库：用反差感制造好奇','夕阳逆光人像拍摄技巧','一个人也要好好吃饭','周末情侣vlog翻新','独居女生的周末早晨','发布抖音视频','研究新赛道选题','健身房30分钟','回复评论区互动','剪辑本周长视频','拍摄新视频素材'];
 
 function init(){loadDeletedIds();loadData();loadTheme();buildHeat();buildStagePills();bind();render();updateCounts();registerSW();initSync()}
 function loadDeletedIds(){try{const s=localStorage.getItem(DK);if(s)deletedIds=new Set(JSON.parse(s))}catch(e){}}
